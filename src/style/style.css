@@ -1,0 +1,178 @@
+  /* ============================= */
+  /*            MAIN               */
+  /* ============================= */
+  main {
+    padding: 0 1em;
+  }
+  
+  /* -------- Sekcja HERO (#first) -------- */
+  #first {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: var(--color-bg-light);
+    border-radius: var(--border-radius);
+    padding: 2em;
+    gap: 1em;
+  }
+  #first > div {
+    flex: 1;
+  }
+  #first h1 {
+    font-size: 2em;
+    font-weight: bold;
+    color: var(--color-tertiary);
+    margin-bottom: 0.5em;
+  }
+  #first p {
+    font-size: 1em;
+    margin-bottom: 1em;
+    color: var(--color-tertiary);
+  }
+  /* Kontener przycisków */
+  #first > div > div {
+    display: flex;
+    gap: 1em;
+    flex-wrap: wrap;
+    margin-top: 1em;
+  }
+  /* Przycisk Create Quiz – kolor akcentowy */
+  #first button {
+    border: none;
+    padding: 0.8em 1.2em;
+    border-radius: var(--border-radius);
+    font-size: 1em;
+    cursor: pointer;
+    color: #fff;
+    transition: background 0.3s;
+  }
+  #first button:nth-of-type(1) {
+    background: var(--color-accent);
+  }
+  #first button:nth-of-type(1):hover {
+    background: var(--color-secondary);
+  }
+  /* Przycisk Take Quiz – kolor sekundarny */
+  #first button:nth-of-type(2) {
+    background: var(--color-secondary);
+  }
+  #first button:nth-of-type(2):hover {
+    background: var(--color-tertiary);
+  }
+  /* Obrazek po prawej stronie sekcji HERO */
+  #first img {
+    width: 40%;
+    max-width: 300px;
+    height: auto;
+    display: block;
+  }
+  
+  /* -------- Sekcja Popular Today (#second) -------- */
+  #second {
+    padding: 2em 0;
+  }
+  #second h3 {
+    font-size: 1.8em;
+    font-weight: bold;
+    margin-bottom: 0.8em;
+    color: var(--color-tertiary);
+  }
+  #second article {
+    background: #f8f8f8;
+    border: 1px solid #ddd;
+    border-radius: var(--border-radius);
+    padding: 1em;
+    min-height: 200px; /* przykładowa wysokość */
+  }
+  
+  /* ============================= */
+  /*            FOOTER             */
+  /* ============================= */
+  footer {
+    background: var(--color-primary);
+    color: #fff;
+    padding: 2em 1em;
+  }
+  footer > div {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 2em;
+    justify-content: space-between;
+    margin-bottom: 1em;
+  }
+  footer > div > div {
+    flex: 1;
+    min-width: 200px;
+  }
+  footer h4 {
+    font-size: 1.2em;
+    margin-bottom: 0.5em;
+  }
+  footer p {
+    font-size: 0.9em;
+    text-align: center;
+    border-top: 1px solid #fff;
+    padding-top: 1em;
+    margin-top: 1em;
+  }
+  footer ul {
+    list-style: none;
+  }
+  footer ul li {
+    margin-bottom: 0.5em;
+    cursor: pointer;
+    transition: color 0.3s;
+  }
+  footer ul li:hover {
+    color: var(--color-accent);
+  }
+  /* Ikony mediów społecznościowych */
+  footer img {
+    width: 24px;
+    height: 24px;
+    margin-right: 0.5em;
+    cursor: pointer;
+    transition: opacity 0.3s;
+  }
+  footer img:hover {
+    opacity: 0.8;
+  }
+  
+  /* ============================= */
+  /*         RESPONSYWNOŚĆ         */
+  /* ============================= */
+  @media (max-width: 768px) {
+    /* Header – elementy w kolumnie */
+    header {
+      flex-direction: column;
+      text-align: center;
+      gap: 0.8em;
+    }
+    nav ul {
+      flex-direction: column;
+      gap: 0.5em;
+    }
+  
+    /* Sekcja HERO – układ pionowy */
+    #first {
+      flex-direction: column;
+      text-align: center;
+    }
+    #first img {
+      width: 80%;
+      max-width: 250px;
+      margin: 1em 0 0;
+    }
+    /* Przyciski – wyśrodkowanie */
+    #first > div > div {
+      justify-content: center;
+    }
+  
+    /* Footer – elementy w pionie */
+    footer > div {
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+    }
+  }
+  

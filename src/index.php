@@ -6,6 +6,8 @@
     <meta name="destription" content="ta strona pokaże ci ciekawy i intrygujący świat kotów"/>
     <meta name="author" content="Same sigmy team"/>
     <meta name="robots" content="none"/>
+    <link rel="stylesheet" href="style/style.css">
+    <link rel="stylesheet" href="style/universal.css">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title></title>
 </head>
@@ -26,7 +28,7 @@
         <button>Sign In</button>
     </header>
     <main>
-        <section id="">
+        <section id="first">
             <div>
                 <h1>Create and Share Interactive Quizzes</h1>
                 <p>Make learning fun and engaging with our easy-to-use quiz platform. Perfect for educators, trainers, and quiz enthusiasts.</p>
@@ -35,8 +37,9 @@
                     <button>Take Quiz</button>
                 </div>
             </div>
+            <img src="Szescian.png" alt="">
         </section>
-        <section>
+        <section id="second">
             <h3>Popular Today</h3>
             <article></article>
         </section>
