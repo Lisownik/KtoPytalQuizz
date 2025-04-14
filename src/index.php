@@ -6,15 +6,31 @@
     <meta name="destription" content="ta strona pokaże ci ciekawy i intrygujący świat kotów"/>
     <meta name="author" content="Same sigmy team"/>
     <meta name="robots" content="none"/>
-    <link rel="stylesheet" href="style/style.css">
-    <link rel="stylesheet" href="style/universal.css">
+    <link rel="stylesheet" href="universal.css">
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Just+Another+Hand&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Raleway:ital,wght@0,100..900;1,100..900&family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap" rel="stylesheet">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title></title>
 </head>
 <body>
+    <div id="log">
+        <h2>Log in</h2>
+        <form>
+            <label for="username">Username</label>
+            <input type="text" id="username" placeholder="   Enter username">
+            
+            <label for="password">Password</label>
+            <input type="password" id="password" placeholder="   Enter password">
+            
+            <button type="submit" class="btn btn-primary">Log in</button>
+            <button type="button" class="btn btn-secondary">Sign in</button>
+        </form>
+    </div>
     <header>
         <div>
-            <img src="Szescian.png" alt="logo mózgu">
+            <img src="logo.png" alt="logo mózgu">
             <h2>Kto Pytał</h2>
         </div>
         <nav>
@@ -47,7 +63,7 @@
     <footer>
         <div>
             <div>
-                <h4></h4>
+                <h4>Kto Pytał</h4>
                 <p>Making quiz creation and sharing easier than ever.</p>
             </div>
             <div>
@@ -76,7 +92,7 @@
                 <img src="" alt="logo linked in">
             </div>
         </div>
-        <p>&copy; 2025  Kto Pytał. All rights reserved.</p>
+        <p id="copyright">&copy; 2025  Kto Pytał. All rights reserved.</p>
     </footer>
 </body>
 </html>

@@ -1,65 +1,99 @@
 :root {
-    --color-primary: #05668D;
-    --color-secondary: #679436;
-    --color-tertiary: #427AA1;
-    --color-bg-light: #EBF2FA;
-    --color-accent: #A5BE00;
+  --color-primary: #05668D;
+  --color-secondary: #679436;
+  --color-tertiary: #427AA1;
+  --color-bg-light: #EBF2FA;
+  --color-accent: #A5BE00;
 
+  --font-base: "Poppins", sans-serif;
+  --border-radius: 6px;
+  --shadow: 1px 10px 8px #888888;
+  --transform-bezier: cubic-bezier(.18,.25,.48,.67); 
+  --max-width: 1200px;
+  --gap: 1em;
+}
 
-    --font-base: 'Arial', sans-serif;
-    --border-radius: 4px;
-    --max-width: 1200px;
-    --gap: 1em;
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+body {
+  font-family: var(--font-base);
+  line-height: 1.6;
+  background: #fff;
+  color: var(--color-tertiary);
 }
 
 header {
-    background: var(--color-primary);
-    color: #fff;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 0.8em 1em;
-  }
-  header > div {
-    display: flex;
-    align-items: center;
-    gap: 0.5em;
-  }
-  header img {
-    width: 50px;
-    height: auto;
-    display: block;
-  }
-  header h2 {
-    font-size: 1.5em;
-    font-weight: bold;
-  }
-  
-  nav ul {
-    list-style: none;
-    display: flex;
-    gap: 1em;
-  }
-  nav li {
-    cursor: pointer;
-    padding: 0.5em;
-    transition: background 0.3s;
-  }
-  nav li:hover {
-    background: var(--color-accent);
-    border-radius: var(--border-radius);
-  }
-  
-  /* Przycisk Sign In */
-  header button {
-    background: var(--color-secondary);
-    color: #fff;
-    border: none;
-    padding: 0.5em 1em;
-    border-radius: var(--border-radius);
-    cursor: pointer;
-    transition: background 0.3s;
-  }
-  header button:hover {
-    background: var(--color-accent);
-  }
+  position: sticky;
+  top: 0;
+  background: var(--color-primary);
+  font-family: var(--font-base);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.8em 1em;
+}
+header > div {
+  display: flex;
+  align-items: center;
+  gap: 0.5em;
+}
+header img {
+  width: 50px;
+  height: auto;
+  display: block;
+}
+header h2 {
+  font-size: 1.5em;
+  font-weight: bold;
+}
+
+/* Nawigacja */
+nav ul {
+  list-style: none;
+  display: flex;
+  gap: 1em;
+}
+nav li {
+  position: relative;
+  cursor: pointer;
+  padding: 0.5em;
+  transition: transform 0.3s var(--transform-bezier);
+}
+
+nav li::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  height: 2px; 
+  width: 100%;
+  background-color: #dedede;
+
+  transform: scaleX(0);
+  transform-origin: left center;
+  transition: transform 0.3s ease;
+}
+
+/* Efekt po najechaniu */
+nav li:hover::after {
+  transform: scaleX(1);
+}
+
+
+/* Przycisk Sign In */
+header button {
+  background: var(--color-secondary);
+  color: #fff;
+  border: none;
+  padding: 0.5em 1em;
+  border-radius: var(--border-radius);
+  cursor: pointer;
+  transition: background 0.3s;
+}
+header button:hover {
+  background: var(--color-accent);
+}
