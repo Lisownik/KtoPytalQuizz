@@ -1,0 +1,2 @@
+RewriteEngine On
+RewriteRule ^quiz/([0-9]+)$ quiz.php?id=$1 [L]
