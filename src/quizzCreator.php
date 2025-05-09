@@ -6,60 +6,81 @@
     <meta name="destription" content="ta strona pokaże ci ciekawy i intrygujący świat kotów"/>
     <meta name="author" content="Same sigmy team"/>
     <meta name="robots" content="none"/>
-    <link rel="stylesheet" href="style/universal.css">
-    <link rel="stylesheet" href="style/style.css">
+    <link rel="stylesheet" href="universal.css">
+    <link rel="stylesheet" href="squizzCreator.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Just+Another+Hand&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Raleway:ital,wght@0,100..900;1,100..900&family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap" rel="stylesheet">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title></title>
-</head>ax
+</head>
 <body>
-    <div id="log">
-        <h2>Log in</h2>
-        <form>
-            <label for="username">Username</label>
-            <input type="text" id="username" placeholder="   Enter username">
-            
-            <label for="password">Password</label>
-            <input type="password" id="password" placeholder="   Enter password">
-            
-            <button type="submit" class="btn btn-primary">Log in</button>
-            <button type="button" class="btn btn-secondary">Sign in</button>
-        </form>
-    </div>
     <header>
         <div>
-            <img src="assets/logo.png" alt="logo mózgu">
+            <img src="logo.png" alt="logo mózgu">
             <h2>Kto Pytał</h2>
         </div>
         <nav>
             <ul>
-                <li>Home</li>
-                <li>Create Quizz</li>
-                <li>Explore</li>
-                <li>Profile</li>
+                <li><a href="index.html">Home</a></li>
+                <li><a href="quizzCreator.html">Create Quizz</a></li>
+                <li><a href="explore.html">Explore</a></li>
+                <li><a href="profile.html">Profile</a></li>
             </ul>
         </nav>
         <button>Sign In</button>
     </header>
-    <main>
-        <section id="first">
-            <div>
-                <h1>Create and Share Interactive Quizzes</h1>
-                <p>Make learning fun and engaging with our easy-to-use quiz platform. Perfect for educators, trainers, and quiz enthusiasts.</p>
-                <div>
-                    <button>Create Quiz</button>
-                    <button>Take Quiz</button>
-                </div>
-            </div>
-            <img src="assets/Szescian.png" alt="">
+    <main class="container">
+    <h2 class="create-quiz-title">Create New Quiz</h2>
+
+    <section class="form-group">
+        <label for="quiz-title">Quiz Title</label>
+        <input type="text" id="quiz-title" class="form-control" placeholder="Enter quiz title">
+    </section>
+
+    <section class="form-group">
+        <label for="quiz-description">Description</label>
+        <textarea id="quiz-description" class="form-control" placeholder="Enter quiz description"></textarea>
+    </section>
+
+    <hr>
+
+    <section class="question-container">
+        <div class="question-header">
+            <h3 class="question-title">Question 1</h3>
+            <img class="delete-btn" src="kosz_ikona.svg" alt="delete">
+        </div>
+
+        <section class="form-group">
+            <input type="text" class="form-control" placeholder="Enter your question">
         </section>
-        <section id="second">
-            <h3>Popular Today</h3>
-            <article></article>
+
+        <section class="options-container">
+            <section class="form-group">
+                <input type="text" class="form-control" placeholder="Option 1">
+            </section>
+            <section class="form-group">
+                <input type="text" class="form-control" placeholder="Option 2">
+            </section>
+            <section class="form-group">
+                <input type="text" class="form-control" placeholder="Option 3">
+            </section>
+            <section class="form-group">
+                <input type="text" class="form-control" placeholder="Option 4">
+            </section>
         </section>
+    </section>
+
+    <button class="add-question-btn">
+        Add Question
+    </button>
+
+    <section class="button-container">
+        <button class="save-btn">Save Draft</button>
+        <button class="publish-btn">Publish Quiz</button>
+    </section>
     </main>
+
     <footer>
         <div>
             <div>
