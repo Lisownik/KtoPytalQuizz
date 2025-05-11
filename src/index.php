@@ -31,6 +31,7 @@
     <header>
         <div>
             <img src="assets/logo.png" alt="logo mózgu">
+            <img src="../assets/logo.png" alt="logo mózgu">
             <h2>Kto Pytał</h2>
         </div>
         <nav>

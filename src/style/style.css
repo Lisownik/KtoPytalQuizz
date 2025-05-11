@@ -5,11 +5,14 @@
 
   #log {
     display: none;
-    /* position: absolute; */
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-60%, -60%);
     margin: 3em 4em;
     padding: 2em 1em;
     width: 30%;
-    display: flex;
+    /*display: flex;*/
     justify-self: center;
     flex-direction: column;
     background-color: #fff;
