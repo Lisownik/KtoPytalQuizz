@@ -1,74 +1,62 @@
-  /* ============================= */
-  /*           LOGOWANIE           */
-  /* ============================= */
+.sign {
+   /*position: absolute;*/
+  margin: 3em 4em;
+  padding: 2em 1em;
+  width: 30%;
+  display: flex;
+  /*display: none;*/
+  justify-self: center;
+  flex-direction: column;
+  background-color: #fff;
+  box-shadow: var(--shadow);
+  border-radius: var(--border-radius);
+}
 
+.sign h2 {
+  align-self: center;
+}
 
-  #log {
-    display: none;
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-60%, -60%);
-    margin: 3em 4em;
-    padding: 2em 1em;
-    width: 30%;
-    /*display: flex;*/
-    justify-self: center;
-    flex-direction: column;
-    background-color: #fff;
-    box-shadow:  var(--shadow);
-    border-radius: var(--border-radius);
-  }
-  
-  #log h2 {
-    align-self: center;
-  }
-  
-  #log form {
-    padding: 2em 1em;
-    display: flex;
-    flex-direction: column;
-  }
-  
-  #log input{
-    border-radius: var(--border-radius);
-    border: 1px solid var(--color-primary);
-    height: 2.5em;
-    margin: 0.75em 0em;
-  }
-  
-  #log button {
-    width: 100%;
-    margin: 0.25em 0em;
-    color: #fff;
-    border: none;
-    padding: 0.75em 1em;
-    border-radius: var(--border-radius);
-    cursor: pointer;
-    transition: background 0.3s;
-  }
-  
-  #log button:nth-of-type(1) {
-    background: var(--color-secondary);
-  }
-  
-  #log button:hover:nth-of-type(1) {
-    background: var(--color-accent);
-  }
-  
-  #log button:nth-of-type(2) {
-    background: var(--color-primary);
-  }
-  
-  #log button:hover:nth-of-type(2) {
-    background: var(--color-tertiary);
-  }
-  
-    
-    /* ============================= */
-    /*             MAIN              */
-    /* ============================= */
-  
+.sign form {
+  padding: 2em 1em;
+  display: flex;
+  flex-direction: column;
+}
+
+.sign input {
+  border-radius: var(--border-radius);
+  border: 1px solid var(--color-primary);
+  height: 2.5em;
+  margin: 0.75em 0em;
+  padding: 1em 0.25em;
+}
+
+.sign button {
+  width: 100%;
+  margin: 0.25em 0em;
+  color: #fff;
+  border: none;
+  padding: 0.75em 1em;
+  border-radius: var(--border-radius);
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.sign button:nth-of-type(1) {
+  background: var(--color-secondary);
+}
+
+.sign button:hover:nth-of-type(1) {
+  background: var(--color-accent);
+}
+
+.sign button:nth-of-type(2) {
+  background: var(--color-primary);
+}
+
+.sign button:hover:nth-of-type(2) {
+  background: var(--color-tertiary);
+}
+
     main {
       margin-top: -10px;
     }

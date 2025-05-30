@@ -15,23 +15,54 @@
     <title></title>
 </head>
 <body>
-    <div id="log">
+    <div class="sign" id="log_in">
+        <h2>Sign in</h2>
+        <form>
+            <label for="rusername">Username</label>
+            <input type="text" id="rusername" placeholder="Enter username" required>
+
+            <label for="rmail">E-mail</label>
+            <input type="email" id="rmail" placeholder="Enter password" required>
+
+            <label for="rpassword">Password</label>
+            <input type="password" id="rpassword" placeholder="Enter password" required>
+
+            <label for="rpasswordconfirm">Repeat Password</label>
+            <input type="password" id="rpasswordconfirm" placeholder="Repeat password" required>
+            
+            <button type="submit" class="btn btn-primary">Log in</button>
+            <button type="button" class="btn btn-secondary">Sign in</button>
+        </form>
+    </div>
+    <div class="sign" id="register">
+        <h2>Log in</h2>
+        <form>
+            <label for="lusername">Username</label>
+            <input type="text" id="lusername" placeholder="Enter username">
+
+            <label for="lpassword">Password</label>
+            <input type="password" id="lpassword" placeholder="Enter password">
+
+            <button type="submit" class="btn btn-primary">Log in</button>
+            <button type="button" class="btn btn-secondary">Sign in</button>
+        </form>
+    </div>
+    <div class="sign" id="register">
         <h2>Log in</h2>
         <form>
             <label for="username">Username</label>
-            <input type="text" id="username" placeholder="   Enter username">
-            
+            <input type="text" id="username" placeholder="Enter username">
+
             <label for="password">Password</label>
-            <input type="password" id="password" placeholder="   Enter password">
-            
+            <input type="password" id="password" placeholder="Enter password">
+
             <button type="submit" class="btn btn-primary">Log in</button>
             <button type="button" class="btn btn-secondary">Sign in</button>
         </form>
     </div>
     <header>
         <div>
-            <img src="assets/logo.png" alt="logo mózgu">
-            <img src="../assets/logo.png" alt="logo mózgu">
+            <a href="index.php"><img src="../assets/logo.png" alt="logo mózgu"></a>
             <h2>Kto Pytał</h2>
         </div>
         <nav>
