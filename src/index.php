@@ -47,19 +47,6 @@
             <button type="button" class="btn btn-secondary">Sign in</button>
         </form>
     </div>
-    <div class="sign" id="register">
-        <h2>Log in</h2>
-        <form>
-            <label for="username">Username</label>
-            <input type="text" id="username" placeholder="Enter username">
-
-            <label for="password">Password</label>
-            <input type="password" id="password" placeholder="Enter password">
-
-            <button type="submit" class="btn btn-primary">Log in</button>
-            <button type="button" class="btn btn-secondary">Sign in</button>
-        </form>
-    </div>
     <header>
         <div>
             <a href="index.php"><img src="../assets/logo.png" alt="logo mózgu"></a>
