@@ -1,0 +1,18 @@
+.explore {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-shadow: var(--shadow);
+    border-radius: var(--border-radius);
+    width: 70%;
+    background-color: var(--color-primary);
+    margin: 2em auto 0;
+}
+
+.explore input {
+    width: 80%;
+    border-radius: var(--border-radius);
+    border: 1px solid var(--color-primary);
+    padding: 1em;
+    margin: 0.7em;
+}
