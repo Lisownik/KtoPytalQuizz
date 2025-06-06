@@ -22,7 +22,7 @@
             <input type="text" id="rusername" placeholder="Enter username" required>
 
             <label for="rmail">E-mail</label>
-            <input type="email" id="rmail" placeholder="Enter password" required>
+                <input type="email" id="rmail" placeholder="Enter password" required>
 
             <label for="rpassword">Password</label>
             <input type="password" id="rpassword" placeholder="Enter password" required>
@@ -54,10 +54,10 @@
         </div>
         <nav>
             <ul>
-                <li>Home</li>
-                <li>Create Quizz</li>
-                <li>Explore</li>
-                <li>Profile</li>
+                <li><a href="index.html">Home</a></li>
+                <li><a href="quizzCreator.html">Create Quizz</a></li>
+                <li><a href="explore.html">Explore</a></li>
+                <li><a href="profile.html">Profile</a></li>
             </ul>
         </nav>
         <button>Sign In</button>
