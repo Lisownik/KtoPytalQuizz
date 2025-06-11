@@ -3,7 +3,9 @@ session_start();
 require_once("../config/db.php");
 
 if (mysqli_connect_errno()) {
-    exit('Nie udało się połączyć z bazą danych :( ' . mysqli_connect_error());
+    $_SESSION['error'] = 'Nie udało się połączyć z bazą danych :( ' . mysqli_connect_error();
+    header('Location: ../index.php'); // Redirect back to index.php
+    exit();
 }
 
 function sanitizuj_dane($dane)
@@ -29,9 +31,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['username'], $_POST['p
             header('Location: ../profile.php');
             exit;
         } else {
-            echo 'Nieprawidłowe hasło.';
+            $_SESSION['error'] = 'Nieprawidłowa nazwa użytkownika lub hasło.'; // Set error message
+            header('Location: ../index.php'); // Redirect back to index.php
+            exit();
         }
     } else {
-        echo 'Użytkownik nie istnieje.';
+        $_SESSION['error'] = 'Nieprawidłowa nazwa użytkownika lub hasło.'; // Set error message
+        header('Location: ../index.php'); // Redirect back to index.php
+        exit();
     }
 }
+// Remove the closing brace that was incorrectly placed here
+?>
