@@ -22,11 +22,7 @@
             <input type="text" id="rusername" placeholder="Enter username" required name="username">
 
             <label for="rmail">E-mail</label>
-<<<<<<< HEAD
                 <input type="email" id="rmail" placeholder="Enter password" required>
-=======
-            <input type="email" id="rmail" placeholder="Enter email" required name="email">
->>>>>>> a549183ce79204dd46444e1474e6cb0bbd9fb946
 
             <label for="rpassword">Password</label>
             <input type="password" id="rpassword" placeholder="Enter password" required name="password">
