@@ -48,8 +48,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             exit();
         }
 
-        if (!isset($question['options']) || count($question['options']) < 2) { // At least 2 options
-            $_SESSION['error'] = 'Pytanie ' . ($q_index + 1) . ' musi mieć przynajmniej dwie opcje.';
+        if (!isset($question['options']) || count(array_filter($question['options'])) < 2) { // At least 2 non-empty options
+            $_SESSION['error'] = 'Pytanie ' . ($q_index + 1) . ' musi mieć przynajmniej dwie niepuste opcje.';
             header('Location: ../quizzCreator.php');
             exit();
         }
@@ -78,21 +78,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         exit();
     }
 
-    // Determine quiz draft status based on 'publish_quiz' checkbox
-    // If 'publish_quiz' is set, it means it's not a draft (is_draft = 0)
-    // If 'publish_quiz' is NOT set, it means it IS a draft (is_draft = 1)
+    // Determine quiz draft status
+    // If 'publish_quiz' button was clicked, it's not a draft (0). Otherwise, it's a draft (1).
     $is_draft = isset($_POST['publish_quiz']) ? 0 : 1; // 0 for published, 1 for draft
 
     // Start a transaction
     $db->begin_transaction();
 
     try {
-        // Insert quiz into 'quiz' table, using 'draft' column and removing 'data_aktualizacji'
-        $stmt_quiz = $db->prepare("INSERT INTO quiz (user_id, nazwa, opis, data_utworzenia, draft) VALUES (?, ?, ?, NOW(), ?)");
+        // Insert quiz into 'quiz' table
+        $default_difficulty = 1; // Domyślny poziom trudności
+        $stmt_quiz = $db->prepare("INSERT INTO quiz (user_id, nazwa, opis, poziom_trudnosci, data_utworzenia, draft) VALUES (?, ?, ?, ?, NOW(), ?)");
         if (!$stmt_quiz) {
             throw new Exception($db->error);
         }
-        $stmt_quiz->bind_param("isis", $user_id, $quiz_title, $quiz_description, $is_draft);
+        // POPRAWKA: Zmieniono typ parametru dla 'opis' z 'i' na 's'
+        $stmt_quiz->bind_param("issii", $user_id, $quiz_title, $quiz_description, $default_difficulty, $is_draft);
         $stmt_quiz->execute();
         $quiz_id = $db->insert_id;
         $stmt_quiz->close();
@@ -100,7 +101,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         // Insert questions and answers
         foreach ($questions as $q_index => $question) {
             $question_text = sanitize_data($question['text']);
-            // Note: The 'pytanie' table has 'Treść' (capital T)
             $stmt_question = $db->prepare("INSERT INTO pytanie (quiz_id, Treść) VALUES (?, ?)");
             if (!$stmt_question) {
                 throw new Exception($db->error);
@@ -114,19 +114,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $option_text_sanitized = sanitize_data($option_text);
                 $is_correct = in_array($o_index, $question['correct'] ?? []) ? 1 : 0;
 
-                // Ensure the option text is not empty if it's one of the required first two options
-                // or if it's marked as correct.
-                if (($o_index < 2 && empty($option_text_sanitized)) || (empty($option_text_sanitized) && $is_correct)) {
-                    // Skip inserting empty non-required options that are not marked as correct
-                    continue;
-                }
-                // If it's empty but not correct and not one of the first two required, also skip.
-                // This ensures we don't insert totally empty options.
-                if (empty($option_text_sanitized) && !$is_correct && $o_index >= 2) {
+                // Only insert non-empty options
+                if (empty($option_text_sanitized)) {
                     continue;
                 }
 
-                // Note: The 'odpowiedzi' table has 'treść_odpowiedzi'
                 $stmt_answer = $db->prepare("INSERT INTO odpowiedzi (pytanie_id, treść_odpowiedzi, czy_poprawna) VALUES (?, ?, ?)");
                 if (!$stmt_answer) {
                     throw new Exception($db->error);
@@ -139,9 +131,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         $db->commit();
         unset($_SESSION['form_data']); // Clear form data on successful submission
-        $message_status = $is_draft === 0 ? 'opublikowany!' : 'zapisany jako szkic!';
-        $_SESSION['success'] = 'Quiz "' . $quiz_title . '" został ' . $message_status;
-        header('Location: ../quizzCreator.php'); // Redirect to profile or quiz details page
+        $_SESSION['success'] = 'Quiz "' . $quiz_title . '" został ' . ($is_draft === 0 ? 'opublikowany!' : 'zapisany jako szkic!');
+        header('Location: ../profile.php'); // Redirect to profile or quiz details page
         exit();
 
     } catch (Exception $e) {
