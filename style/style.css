@@ -240,7 +240,6 @@ main {
     box-shadow: var(--shadow-xl);
     z-index: 1;
     transition: var(--transition);
-    margin-top: 100px;
 }
 
 #second {

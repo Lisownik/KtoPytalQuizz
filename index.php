@@ -94,6 +94,7 @@ $zalogowany = isset($_SESSION['zalogowany']) ? $_SESSION['zalogowany'] : false;
             <li><a href="quizzCreator.php">Create Quizz</a></li>
             <li><a href="explore.php">Explore</a></li>
             <li><a href="profile.php">Profile</a></li>
+            <li><a href="history.php">History</a></li>
         </ul>
         <div class="mobile-auth">
             <?php if ($zalogowany): ?>
@@ -118,6 +119,7 @@ $zalogowany = isset($_SESSION['zalogowany']) ? $_SESSION['zalogowany'] : false;
             <li><a href="quizzCreator.php">Create Quizz</a></li>
             <li><a href="explore.php">Explore</a></li>
             <li><a href="profile.php">Profile</a></li>
+            <li><a href="history.php">History</a></li>
         </ul>
     </nav>
     <div class="header-auth">

@@ -35,6 +35,7 @@ $zalogowany = isset($_SESSION['zalogowany']) ? $_SESSION['zalogowany'] : false;
             <li><a href="quizzCreator.php">Create Quizz</a></li>
             <li><a href="explore.php">Explore</a></li>
             <li><a href="profile.php">Profile</a></li>
+            <li><a href="history.php">History</a></li>
         </ul>
         <div class="mobile-auth">
             <?php if ($zalogowany): ?>
@@ -42,7 +43,7 @@ $zalogowany = isset($_SESSION['zalogowany']) ? $_SESSION['zalogowany'] : false;
                     <button type="submit">Logout</button>
                 </form>
             <?php else: ?>
-                <a href="index.php" class="mobile-login-btn">Sign In</a>
+                <a href="quizzCreator.php" class="mobile-login-btn">Sign In</a>
             <?php endif; ?>
         </div>
     </nav>
@@ -59,6 +60,7 @@ $zalogowany = isset($_SESSION['zalogowany']) ? $_SESSION['zalogowany'] : false;
             <li><a href="quizzCreator.php" style="background: rgba(255, 255, 255, 0.1);">Create Quizz</a></li>
             <li><a href="explore.php">Explore</a></li>
             <li><a href="profile.php">Profile</a></li>
+            <li><a href="history.php">History</a></li>
         </ul>
     </nav>
     <div class="header-auth">
@@ -67,7 +69,7 @@ $zalogowany = isset($_SESSION['zalogowany']) ? $_SESSION['zalogowany'] : false;
                 <button type="submit" class="logout-btn">Logout</button>
             </form>
         <?php else: ?>
-            <a href="index.php" class="signin-link">Sign In</a>
+            <a href="quizzCreator.php" class="signin-link">Sign In</a>
         <?php endif; ?>
     </div>
 </header>

@@ -87,6 +87,7 @@ mysqli_close($db);
             <li><a href="quizzCreator.php">Create Quizz</a></li>
             <li><a href="explore.php">Explore</a></li>
             <li><a href="profile.php">Profile</a></li>
+            <li><a href="history.php">History</a></li>
         </ul>
         <div class="mobile-auth">
             <form method="post" action="php/logout.php">
@@ -107,6 +108,7 @@ mysqli_close($db);
             <li><a href="quizzCreator.php">Create Quiz</a></li>
             <li><a href="explore.php">Explore</a></li>
             <li><a href="profile.php" style="background: rgba(255, 255, 255, 0.1);">Profile</a></li>
+            <li><a href="history.php">History</a></li>
         </ul>
     </nav>
     <div class="header-auth">
@@ -134,10 +136,6 @@ mysqli_close($db);
                     <div class="stat-item">
                         <div class="stat-number"><?php echo number_format($total_plays); ?></div>
                         <div class="stat-label">Total Plays</div>
-                    </div>
-                    <div class="stat-item">
-                        <div class="stat-number"><?php echo rand(50, 200); ?></div>
-                        <div class="stat-label">Followers</div>
                     </div>
                 </div>
             </div>
