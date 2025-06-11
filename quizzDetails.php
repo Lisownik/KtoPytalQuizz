@@ -187,204 +187,77 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['toggle_like'])) {
 <!DOCTYPE html>
 <html lang="pl">
 <head>
-	<meta charset="UTF-8">
-	<meta name="keywords" content="quiz details, quiz preview"/>
-	<meta name="description" content="Quiz Details - Kto Pytał"/>
-	<meta name="author" content="Same sigmy team"/>
-	<meta name="robots" content="none"/>
-	<link rel="stylesheet" href="style/universal.css">
-	<link rel="stylesheet" href="style/style.css">
-	<link rel="stylesheet" href="style/quizzDetails.css">
-	<link rel="preconnect" href="https://fonts.googleapis.com">
-	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-	<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<title>Quiz Details - Kto Pytał</title>
-	<style>
-        /* Basic styling for the comments section */
-        .comments-section {
-            background-color: #f9f9f9;
-            border-radius: 8px;
-            padding: 20px;
-            margin-top: 30px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
-        }
-
-        .comments-section h2 {
-            font-size: 1.8em;
-            color: #333;
-            margin-bottom: 20px;
-            border-bottom: 2px solid #eee;
-            padding-bottom: 10px;
-        }
-
-        .comment-form textarea {
-            width: 100%;
-            padding: 10px;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            resize: vertical;
-            min-height: 80px;
-            margin-bottom: 10px;
-            font-family: 'Poppins', sans-serif;
-            font-size: 1em;
-        }
-
-        .comment-form button {
-            background-color: #4CAF50; /* Green */
-            color: white;
-            padding: 10px 20px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 1em;
-            transition: background-color 0.3s ease;
-        }
-
-        .comment-form button:hover {
-            background-color: #45a049;
-        }
-
-        .comment-list {
-            margin-top: 20px;
-        }
-
-        .comment-item {
-            background-color: #fff;
-            border: 1px solid #eee;
-            border-radius: 5px;
-            padding: 15px;
-            margin-bottom: 15px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.03);
-        }
-
-        .comment-author {
-            font-weight: 600;
-            color: #555;
-            margin-bottom: 5px;
-        }
-
-        .comment-date {
-            font-size: 0.85em;
-            color: #888;
-            margin-bottom: 10px;
-        }
-
-        .comment-text {
-            line-height: 1.6;
-            color: #333;
-        }
-
-        /* Error/Success messages */
-        .message-container {
-            margin-bottom: 20px;
-            padding: 10px;
-            border-radius: 5px;
-        }
-
-        .error-message {
-            background-color: #f8d7da;
-            color: #721c24;
-            border: 1px solid #f5c6cb;
-        }
-
-        .success-message {
-            background-color: #d4edda;
-            color: #155724;
-            border: 1px solid #c3e6cb;
-        }
-
-        /* Styling for the like button */
-        .like-section {
-            display: flex;
-            align-items: center;
-            margin-left: 20px; /* Adjust spacing as needed */
-        }
-
-        .like-button {
-            background: none;
-            border: none;
-            cursor: pointer;
-            padding: 0;
-            display: flex;
-            align-items: center;
-            font-size: 1.2em; /* Adjust icon size */
-            color: #ccc; /* Default color for unliked */
-            transition: color 0.2s ease, transform 0.2s ease;
-        }
-
-        .like-button.liked {
-            color: #e0245e; /* Red color for liked state */
-        }
-
-        .like-button:hover {
-            transform: scale(1.1);
-        }
-
-        .like-count {
-            margin-left: 5px;
-            font-weight: 600;
-            color: #555;
-        }
-	</style>
+    <meta charset="UTF-8">
+    <meta name="keywords" content="quiz details, quiz preview"/>
+    <meta name="description" content="Quiz Details - Kto Pytał"/>
+    <meta name="author" content="Same sigmy team"/>
+    <meta name="robots" content="none"/>
+    <link rel="stylesheet" href="style/universal.css">
+    <link rel="stylesheet" href="style/style.css">
+    <link rel="stylesheet" href="style/quizzDetails.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz Details - Kto Pytał</title>
 </head>
 <body>
 
 <div class="hamburger">
-	<input type="checkbox" id="mobile-menu-toggle">
-	<label for="mobile-menu-toggle" class="hamburger-btn">
-		<span></span>
-		<span></span>
-		<span></span>
-	</label>
-	<div class="mobile-nav-overlay"></div>
-	<nav class="mobile-nav">
-		<ul>
-			<li><a href="index.php">Home</a></li>
-			<li><a href="quizzCreator.php">Create Quizz</a></li>
-			<li><a href="explore.php">Explore</a></li>
-			<li><a href="profile.php">Profile</a></li>
-			<li><a href="history.php">History</a></li>
-		</ul>
-		<div class="mobile-auth">
+    <input type="checkbox" id="mobile-menu-toggle">
+    <label for="mobile-menu-toggle" class="hamburger-btn">
+        <span></span>
+        <span></span>
+        <span></span>
+    </label>
+    <div class="mobile-nav-overlay"></div>
+    <nav class="mobile-nav">
+        <ul>
+            <li><a href="index.php">Home</a></li>
+            <li><a href="quizzCreator.php">Create Quizz</a></li>
+            <li><a href="explore.php">Explore</a></li>
+            <li><a href="profile.php">Profile</a></li>
+            <li><a href="history.php">History</a></li>
+        </ul>
+        <div class="mobile-auth">
             <?php if ($zalogowany): /* Check if user is logged in*/ ?>
-				<form method="post" action="php/logout.php">
-					<button type="submit">Logout</button>
-				</form>
+                <form method="post" action="php/logout.php">
+                    <button type="submit">Logout</button>
+                </form>
             <?php else: ?>
-				<a href="#" class="mobile-login-btn">Sign In</a>
+                <a href="#" class="mobile-login-btn">Sign In</a>
             <?php endif; ?>
-		</div>
-	</nav>
+        </div>
+    </nav>
 </div>
 
 <header>
-	<div>
-		<a href="index.php"><img src="assets/logo.png" alt="logo mózgu"></a>
-		<h2>Kto Pytał</h2>
-	</div>
-	<nav>
-		<ul>
-			<li><a href="index.php">Home</a></li>
-			<li><a href="quizzCreator.php">Create Quizz</a></li>
-			<li><a href="explore.php">Explore</a></li>
-			<li><a href="profile.php">Profile</a></li>
-			<li><a href="history.php">History</a></li>
-		</ul>
-	</nav>
-	<div class="header-auth">
+    <div>
+        <a href="index.php"><img src="assets/logo.png" alt="logo mózgu"></a>
+        <h2>Kto Pytał</h2>
+    </div>
+    <nav>
+        <ul>
+            <li><a href="index.php">Home</a></li>
+            <li><a href="quizzCreator.php">Create Quizz</a></li>
+            <li><a href="explore.php">Explore</a></li>
+            <li><a href="profile.php">Profile</a></li>
+            <li><a href="history.php">History</a></li>
+        </ul>
+    </nav>
+    <div class="header-auth">
         <?php if ($zalogowany): /* Check if user is logged in*/ ?>
-			<form method="post" action="php/logout.php" class="logout-form">
-				<button type="submit" class="logout-btn">Logout</button>
-			</form>
+            <form method="post" action="php/logout.php" class="logout-form">
+                <button type="submit" class="logout-btn">Logout</button>
+            </form>
         <?php else: ?>
-			<a href="#" id="open-login" class="signin-link">Sign In</a>
+            <a href="#" id="open-login" class="signin-link">Sign In</a>
         <?php endif; ?>
-	</div>
+    </div>
 </header>
 
 <main class="quiz-details-main">
-	<div class="quiz-details-container">
+    <div class="quiz-details-container">
 
         <?php
         if (isset($_SESSION['error'])) {
@@ -397,135 +270,148 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['toggle_like'])) {
         }
         ?>
 
-		<div class="quiz-info-card">
-			<div class="quiz-header">
-				<h1 class="quiz-title"><?php echo htmlspecialchars($quiz['tytul']); /* Display quiz title*/ ?></h1>
-				<div class="quiz-meta">
-					<span class="quiz-author">By: <?php echo htmlspecialchars($quiz['autor_nazwa']); /* Display quiz author*/ ?></span>
-				</div>
-			</div>
+        <div class="quiz-info-card">
+            <div class="quiz-header">
+                <h1 class="quiz-title"><?php echo htmlspecialchars($quiz['tytul']); /* Display quiz title*/ ?></h1>
+                <div class="quiz-meta">
+                    <span class="quiz-author">By: <?php echo htmlspecialchars($quiz['autor_nazwa']); /* Display quiz author*/ ?></span>
+                </div>
+            </div>
 
-			<div class="quiz-description">
-				<h2>About This Quiz</h2>
-				<p><?php echo nl2br(htmlspecialchars($quiz['opis'])); /* Display quiz description*/ ?></p>
-			</div>
+            <div class="quiz-description">
+                <h2>About This Quiz</h2>
+                <p><?php echo nl2br(htmlspecialchars($quiz['opis'])); /* Display quiz description*/ ?></p>
+            </div>
 
-			<div class="quiz-stats">
-				<div class="stat-item">
-					<span class="stat-number"><?php echo $num_questions; /* Display number of questions*/ ?></span>
-					<span class="stat-label">Questions</span>
-				</div>
-				<div class="stat-item">
-					<span class="stat-number"><?php echo $estimated_minutes; /* Display estimated minutes*/ ?></span>
-					<span class="stat-label">Minutes</span>
-				</div>
-				<div class="stat-item like-section">
-					<form method="POST" action="quizzDetails.php?id=<?php echo $quiz_id; ?>" style="display:inline;">
-						<button type="submit" name="toggle_like" class="like-button <?php echo $user_liked_quiz ? 'liked' : ''; ?>" <?php echo !$zalogowany ? 'disabled title="Zaloguj się, aby polubić quiz"' : ''; ?>>
-							<svg width="24" height="24" viewBox="0 0 24 24" fill="<?php echo $user_liked_quiz ? 'currentColor' : 'none'; ?>" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-								<path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
-							</svg>
-						</button>
-					</form>
-					<span class="like-count"><?php echo $total_likes; ?></span>
-					<span class="stat-label">Likes</span>
-				</div>
-			</div>
-		</div>
+            <div class="quiz-stats">
+                <div class="stat-item">
+                    <span class="stat-number"><?php echo $num_questions; /* Display number of questions*/ ?></span>
+                    <span class="stat-label">Questions</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number"><?php echo $estimated_minutes; /* Display estimated minutes*/ ?></span>
+                    <span class="stat-label">Minutes</span>
+                </div>
+                <div class="stat-item like-section">
+                    <form method="POST" action="quizzDetails.php?id=<?php echo $quiz_id; ?>">
+                        <button type="submit" name="toggle_like" class="like-button <?php echo $user_liked_quiz ? 'liked' : ''; ?>" <?php echo !$zalogowany ? 'disabled title="Zaloguj się, aby polubić quiz"' : ''; ?>>
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="<?php echo $user_liked_quiz ? 'currentColor' : 'none'; ?>" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+                            </svg>
+                        </button>
+                    </form>
+                    <span class="like-count"><?php echo $total_likes; ?></span>
+                    <span class="stat-label">Likes</span>
+                </div>
+            </div>
+        </div>
 
-		<div class="quiz-actions">
-			<div class="action-buttons">
-				<a href="quizzQuestions.php?id=<?php echo $quiz_id; /* Pass quiz ID to quiz.php*/ ?>" class="btn btn-primary btn-large">
-					<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-						<polygon points="5,3 19,12 5,21"/>
-					</svg>
-					Rozwiąż Quiz
-				</a>
+        <div class="quiz-actions">
+            <div class="action-buttons">
+                <a href="quizzQuestions.php?id=<?php echo $quiz_id; /* Pass quiz ID to quiz.php*/ ?>" class="btn btn-primary btn-large">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <polygon points="5,3 19,12 5,21"/>
+                    </svg>
+                    Rozwiąż Quiz
+                </a>
 
-				<a href="explore.php" class="btn btn-secondary">
-					<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-						<path d="m12 19-7-7 7-7"/>
-						<path d="M19 12H5"/>
-					</svg>
-					Cofnij
-				</a>
-			</div>
-		</div>
+                <a href="explore.php" class="btn btn-secondary">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="m12 19-7-7 7-7"/>
+                        <path d="M19 12H5"/>
+                    </svg>
+                    Cofnij
+                </a>
+            </div>
+        </div>
 
-		<div class="comments-section">
-			<h2>Comments</h2>
+        <div class="comments-section">
+            <h2>💬 Comments</h2>
 
             <?php if ($zalogowany): /* Check if user is logged in to allow commenting*/ ?>
-				<form action="quizzDetails.php?id=<?php echo $quiz_id; ?>" method="POST" class="comment-form">
-					<textarea name="comment_text" placeholder="Add your comment..." required></textarea>
-					<button type="submit" name="submit_comment">Submit Comment</button>
-				</form>
+                <form action="quizzDetails.php?id=<?php echo $quiz_id; ?>" method="POST" class="comment-form">
+                    <textarea name="comment_text" placeholder="Share your thoughts about this quiz..." required></textarea>
+                    <button type="submit" name="submit_comment">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="m22 2-7 20-4-9-9-4z"/>
+                            <path d="M22 2L11 13"/>
+                        </svg>
+                        Submit Comment
+                    </button>
+                </form>
             <?php else: ?>
-				<p>You must be logged in to add a comment. <a href="#" id="open-login-comment">Sign In</a></p>
+                <div class="login-prompt">
+                    <p>You must be <a href="#" id="open-login-comment">logged in</a> to add a comment.</p>
+                </div>
             <?php endif; ?>
 
-			<div class="comment-list">
+            <div class="comment-list">
                 <?php if (!empty($comments)): /* Display comments if any exist*/ ?>
                     <?php foreach ($comments as $comment): ?>
-						<div class="comment-item">
-							<div class="comment-author"><?php echo htmlspecialchars($comment['user_nazwa']); ?></div>
-							<div class="comment-date"><?php echo date('F j, Y, g:i a', strtotime($comment['data_utworzenia'])); ?></div>
-							<p class="comment-text"><?php echo nl2br(htmlspecialchars($comment['treść'])); ?></p>
-						</div>
+                        <div class="comment-item">
+                            <div class="comment-header">
+                                <div class="comment-author"><?php echo htmlspecialchars($comment['user_nazwa']); ?></div>
+                                <div class="comment-date"><?php echo date('F j, Y • g:i A', strtotime($comment['data_utworzenia'])); ?></div>
+                            </div>
+                            <p class="comment-text"><?php echo nl2br(htmlspecialchars($comment['treść'])); ?></p>
+                        </div>
                     <?php endforeach; ?>
                 <?php else: ?>
-					<p>No comments yet. Be the first to comment!</p>
+                    <div class="no-comments">
+                        <div class="empty-icon">💭</div>
+                        <p>No comments yet. Be the first to share your thoughts!</p>
+                    </div>
                 <?php endif; ?>
-			</div>
-		</div>
+            </div>
+        </div>
 
-	</div>
+    </div>
 </main>
 
 <footer>
-	<div class="footer-content">
-		<div class="footer-section">
-			<h4>Kto Pytał</h4>
-			<p>Making quiz creation and sharing easier than ever. Build engaging quizzes that captivate your audience.</p>
-		</div>
-		<div class="footer-section">
-			<h4>Quick Links</h4>
-			<ul>
-				<li>About Us</li>
-				<li>Features</li>
-				<li>Pricing</li>
-				<li>Blog</li>
-			</ul>
-		</div>
-		<div class="footer-section">
-			<h4>Support</li>
-				<ul>
-					<li>Help Center</li>
-					<li>Contact Us</li>
-					<li>Privacy Policy</li>
-					<li>Terms of Service</li>
-				</ul>
-		</div>
-		<div class="footer-section">
-			<h4>Follow Us</h4>
-			<ul>
-				<li>Facebook</li>
-				<li>Twitter</li>
-				<li>Instagram</li>
-				<li>LinkedIn</li>
-			</ul>
-		</div>
-	</div>
-	<div class="footer-bottom">
-		<p>© 2025 Kto Pytał. All rights reserved.</p>
-	</div>
+    <div class="footer-content">
+        <div class="footer-section">
+            <h4>Kto Pytał</h4>
+            <p>Making quiz creation and sharing easier than ever. Build engaging quizzes that captivate your audience.</p>
+        </div>
+        <div class="footer-section">
+            <h4>Quick Links</h4>
+            <ul>
+                <li>About Us</li>
+                <li>Features</li>
+                <li>Pricing</li>
+                <li>Blog</li>
+            </ul>
+        </div>
+        <div class="footer-section">
+            <h4>Support</h4>
+            <ul>
+                <li>Help Center</li>
+                <li>Contact Us</li>
+                <li>Privacy Policy</li>
+                <li>Terms of Service</li>
+            </ul>
+        </div>
+        <div class="footer-section">
+            <h4>Follow Us</h4>
+            <ul>
+                <li>Facebook</li>
+                <li>Twitter</li>
+                <li>Instagram</li>
+                <li>LinkedIn</li>
+            </ul>
+        </div>
+    </div>
+    <div class="footer-bottom">
+        <p>© 2025 Kto Pytał. All rights reserved.</p>
+    </div>
 </footer>
 
 <script src="js/mobile-menu.js"></script>
 <script>
     document.addEventListener('DOMContentLoaded', function() {
         // Add smooth animations
-        const cards = document.querySelectorAll('.quiz-info-card, .quiz-actions, .comments-section'); // Include comments section for animation
+        const cards = document.querySelectorAll('.quiz-info-card, .quiz-actions, .comments-section');
 
         cards.forEach((card, index) => {
             card.style.opacity = '0';
@@ -550,6 +436,41 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['toggle_like'])) {
             });
         });
 
+        // Comment form enhancements
+        const commentForm = document.querySelector('.comment-form');
+        if (commentForm) {
+            const textarea = commentForm.querySelector('textarea');
+            const submitBtn = commentForm.querySelector('button[type="submit"]');
+
+            // Auto-resize textarea
+            textarea.addEventListener('input', function() {
+                this.style.height = 'auto';
+                this.style.height = this.scrollHeight + 'px';
+            });
+
+            // Character counter (optional)
+            textarea.addEventListener('input', function() {
+                const remaining = 500 - this.value.length;
+                if (remaining < 50) {
+                    this.style.borderColor = remaining < 0 ? 'var(--color-danger)' : 'var(--color-warning)';
+                } else {
+                    this.style.borderColor = 'var(--color-gray-200)';
+                }
+            });
+        }
+
+        // Like button animation
+        const likeButton = document.querySelector('.like-button');
+        if (likeButton && !likeButton.disabled) {
+            likeButton.addEventListener('click', function(e) {
+                // Add a little animation on click
+                this.style.transform = 'scale(0.95)';
+                setTimeout(() => {
+                    this.style.transform = 'scale(1)';
+                }, 150);
+            });
+        }
+
         // Handle the "Sign In" link for comments (if not logged in)
         const openLoginComment = document.getElementById('open-login-comment');
         if (openLoginComment) {
@@ -559,6 +480,28 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['toggle_like'])) {
                 window.location.href = 'login.php'; // Redirect to your login page
             });
         }
+
+        // Animate comments on scroll
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const commentObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateX(0)';
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.comment-item').forEach(item => {
+            item.style.opacity = '0';
+            item.style.transform = 'translateX(-20px)';
+            item.style.transition = 'all 0.6s ease';
+            commentObserver.observe(item);
+        });
     });
 </script>
 

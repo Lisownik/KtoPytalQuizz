@@ -79,7 +79,6 @@
     font-size: 1.05rem; /* Zachowaj spójny rozmiar z innymi meta */
 }
 
-
 /* Quiz Description */
 .quiz-description {
     margin-bottom: 2.5rem; /* Adjusted margin */
@@ -228,8 +227,390 @@
     box-shadow: 0 10px 30px rgba(5, 102, 141, 0.3);
 }
 
-/* Additional Info (Cała sekcja usunięta z CSS) */
+/* Like Section Styling */
+.like-section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    position: relative;
+}
 
+.like-button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    color: var(--color-gray-400);
+    transition: all 0.3s ease;
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    position: relative;
+    overflow: hidden;
+}
+
+.like-button::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    background: rgba(255, 182, 193, 0.3);
+    border-radius: 50%;
+    transition: all 0.3s ease;
+    transform: translate(-50%, -50%);
+}
+
+.like-button:hover::before {
+    width: 100%;
+    height: 100%;
+}
+
+.like-button.liked {
+    color: #e0245e;
+    animation: heartBeat 0.6s ease;
+}
+
+.like-button:hover {
+    transform: scale(1.1);
+    color: #e0245e;
+}
+
+.like-button:disabled {
+    cursor: not-allowed;
+    opacity: 0.5;
+    transform: none !important;
+}
+
+.like-count {
+    font-weight: 600;
+    font-size: 1.2rem;
+    color: var(--color-gray-700);
+    text-align: center;
+}
+
+@keyframes heartBeat {
+    0% { transform: scale(1); }
+    25% { transform: scale(1.2); }
+    50% { transform: scale(1); }
+    75% { transform: scale(1.1); }
+    100% { transform: scale(1); }
+}
+
+/* Comments Section */
+.comments-section {
+    background: var(--color-bg-light);
+    border-radius: var(--border-radius-lg);
+    padding: 3rem;
+    margin-top: 2.5rem;
+    box-shadow: var(--shadow-xl);
+    border: 1px solid var(--color-gray-100);
+    position: relative;
+    overflow: hidden;
+}
+
+.comments-section::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, var(--color-secondary), var(--color-accent));
+    background-size: 200% 100%;
+    animation: gradientShift 4s ease infinite;
+}
+
+.comments-section h2 {
+    font-size: 2rem;
+    color: var(--color-gray-800);
+    margin-bottom: 2rem;
+    font-weight: 700;
+    font-family: var(--font-secondary);
+    text-align: center;
+    position: relative;
+    padding-bottom: 1rem;
+}
+
+.comments-section h2::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 60px;
+    height: 3px;
+    background: linear-gradient(90deg, var(--color-secondary), var(--color-accent));
+    border-radius: 2px;
+}
+
+/* Comment Form */
+.comment-form {
+    background: var(--color-gray-50);
+    padding: 2rem;
+    border-radius: var(--border-radius);
+    margin-bottom: 2.5rem;
+    border: 1px solid var(--color-gray-200);
+    transition: var(--transition);
+}
+
+.comment-form:hover {
+    box-shadow: var(--shadow-md);
+    transform: translateY(-2px);
+}
+
+.comment-form textarea {
+    width: 100%;
+    padding: 1rem;
+    border: 2px solid var(--color-gray-200);
+    border-radius: var(--border-radius);
+    resize: vertical;
+    min-height: 120px;
+    margin-bottom: 1.5rem;
+    font-family: var(--font-primary);
+    font-size: 1rem;
+    line-height: 1.6;
+    background: var(--color-bg-light);
+    transition: var(--transition);
+}
+
+.comment-form textarea:focus {
+    outline: none;
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 3px rgba(5, 102, 141, 0.1);
+    transform: translateY(-1px);
+}
+
+.comment-form textarea::placeholder {
+    color: var(--color-gray-400);
+    font-style: italic;
+}
+
+.comment-form button {
+    background: linear-gradient(135deg, var(--color-secondary), var(--color-accent));
+    color: white;
+    padding: 1rem 2rem;
+    border: none;
+    border-radius: 25px;
+    cursor: pointer;
+    font-size: 1rem;
+    font-weight: 600;
+    transition: var(--transition);
+    position: relative;
+    overflow: hidden;
+    box-shadow: var(--shadow-md);
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.comment-form button::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+    transition: left 0.5s ease;
+}
+
+.comment-form button:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+}
+
+.comment-form button:hover::before {
+    left: 100%;
+}
+
+/* Login Prompt */
+.login-prompt {
+    text-align: center;
+    padding: 2rem;
+    background: var(--color-gray-50);
+    border-radius: var(--border-radius);
+    border: 2px dashed var(--color-gray-300);
+    margin-bottom: 2.5rem;
+}
+
+.login-prompt p {
+    color: var(--color-gray-600);
+    font-size: 1.1rem;
+    margin: 0;
+}
+
+.login-prompt a {
+    color: var(--color-primary);
+    text-decoration: none;
+    font-weight: 600;
+    transition: var(--transition);
+    position: relative;
+}
+
+.login-prompt a::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background: var(--color-primary);
+    transition: width 0.3s ease;
+}
+
+.login-prompt a:hover::after {
+    width: 100%;
+}
+
+/* Comment List */
+.comment-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.comment-item {
+    background: var(--color-bg-light);
+    border: 1px solid var(--color-gray-200);
+    border-radius: var(--border-radius);
+    padding: 1.5rem;
+    transition: var(--transition);
+    position: relative;
+    overflow: hidden;
+}
+
+.comment-item::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 4px;
+    background: linear-gradient(180deg, var(--color-secondary), var(--color-accent));
+    transform: scaleY(0);
+    transition: transform 0.3s ease;
+}
+
+.comment-item:hover {
+    box-shadow: var(--shadow-md);
+    transform: translateX(8px);
+    border-color: var(--color-gray-300);
+}
+
+.comment-item:hover::before {
+    transform: scaleY(1);
+}
+
+.comment-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+.comment-author {
+    font-weight: 600;
+    color: var(--color-primary);
+    font-size: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.comment-author::before {
+    content: '👤';
+    font-size: 1.2rem;
+}
+
+.comment-date {
+    font-size: 0.85rem;
+    color: var(--color-gray-500);
+    font-style: italic;
+}
+
+.comment-text {
+    line-height: 1.7;
+    color: var(--color-gray-700);
+    font-size: 1rem;
+    margin: 0;
+}
+
+/* Empty Comments State */
+.no-comments {
+    text-align: center;
+    padding: 3rem 2rem;
+    color: var(--color-gray-500);
+    background: var(--color-gray-50);
+    border-radius: var(--border-radius);
+    border: 2px dashed var(--color-gray-300);
+}
+
+.no-comments .empty-icon {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+    color: var(--color-gray-400);
+}
+
+.no-comments p {
+    font-size: 1.1rem;
+    margin: 0;
+}
+
+/* Message Containers */
+.message-container {
+    margin-bottom: 2rem;
+    padding: 1rem 1.5rem;
+    border-radius: var(--border-radius);
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    font-weight: 500;
+    animation: slideInDown 0.5s ease;
+}
+
+@keyframes slideInDown {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.error-message {
+    background-color: #fef2f2;
+    color: #dc2626;
+    border: 1px solid #fecaca;
+    border-left: 4px solid #dc2626;
+}
+
+.error-message::before {
+    content: '⚠️';
+    font-size: 1.2rem;
+}
+
+.success-message {
+    background-color: #f0fdf4;
+    color: #16a34a;
+    border: 1px solid #bbf7d0;
+    border-left: 4px solid #16a34a;
+}
+
+.success-message::before {
+    content: '✅';
+    font-size: 1.2rem;
+}
 
 /* Responsive Design */
 @media (max-width: 768px) {
@@ -289,7 +670,47 @@
         padding: 1.1rem 1.8rem;
     }
 
-    /* Usunięto media query dla additional-info */
+    /* Comments Section Mobile */
+    .comments-section {
+        padding: 2rem 1.5rem;
+        margin-top: 2rem;
+    }
+
+    .comments-section h2 {
+        font-size: 1.6rem;
+        margin-bottom: 1.5rem;
+    }
+
+    .comment-form {
+        padding: 1.5rem;
+        margin-bottom: 2rem;
+    }
+
+    .comment-form textarea {
+        min-height: 100px;
+        margin-bottom: 1rem;
+    }
+
+    .comment-form button {
+        width: 100%;
+        justify-content: center;
+        padding: 1rem;
+    }
+
+    .comment-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.5rem;
+    }
+
+    .like-button {
+        width: 40px;
+        height: 40px;
+    }
+
+    .like-count {
+        font-size: 1rem;
+    }
 }
 
 @media (max-width: 480px) {
@@ -332,7 +753,25 @@
         padding: 1.5rem;
     }
 
-    /* Usunięto media query dla additional-info */
+    .comments-section {
+        padding: 1.5rem 1rem;
+    }
+
+    .comments-section h2 {
+        font-size: 1.4rem;
+    }
+
+    .comment-form {
+        padding: 1rem;
+    }
+
+    .comment-item {
+        padding: 1rem;
+    }
+
+    .comment-text {
+        font-size: 0.9rem;
+    }
 }
 
 /* Animation Classes */
@@ -354,11 +793,20 @@
     border-radius: 25px; /* Dopasowanie do nowych rogów przycisku */
 }
 
+.comment-form textarea:focus,
+.like-button:focus {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 2px;
+}
+
 /* Reduced Motion */
 @media (prefers-reduced-motion: reduce) {
     .quiz-info-card::before,
+    .comments-section::before,
     .btn,
-    .fade-in {
+    .fade-in,
+    .comment-item,
+    .like-button {
         animation: none !important; /* Force no animation */
         transition: none !important; /* Force no transition */
     }
