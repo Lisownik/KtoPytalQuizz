@@ -238,7 +238,7 @@ mysqli_close($db);
                             <div class="quiz-card__author">
                                 By: <span><?php echo htmlspecialchars($quiz['author_name']); ?></span>
                             </div>
-                            <a href="quizzDetails.php?id=<?php echo $quiz['quiz_id']; ?>" class="quiz-card__button">See More</a>
+                            <a href="quiz_details.php?id=<?php echo $quiz['quiz_id']; ?>" class="quiz-card__button">See More</a>
                         </div>
                     </article>
                     <?php
