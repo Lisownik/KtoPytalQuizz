@@ -1,8 +1,17 @@
 <?php
 session_start();
+// Włącz wyświetlanie błędów PHP na potrzeby debugowania (TYLKO W TRAKCIE ROZWOJU, NIE NA PRODUKCJI!)
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
+
 require_once("config/db.php");
 
 $zalogowany = isset($_SESSION['zalogowany']) ? $_SESSION['zalogowany'] : false;
+
+// Pobieramy user_id z sesji, jeśli użytkownik jest zalogowany
+$user_id = $zalogowany ? (isset($_SESSION['user_id']) ? (int)$_SESSION['user_id'] : null) : null;
+// Zmiana: Dodano isset($_SESSION['user_id']) na wypadek, gdyby sesja była zalogowana, ale user_id nie było ustawione
 
 if (mysqli_connect_errno()) {
     exit('Nie udało się połączyć z bazą danych :( ' . mysqli_connect_error());
@@ -18,6 +27,7 @@ if (!isset($_SESSION['quiz_id']) || $_SESSION['quiz_id'] !== $quiz_id || isset($
     $_SESSION['quiz_user_answers'] = []; // { question_id => ['selected_ids' => [], 'is_correct' => false, 'is_checked' => false] }
     $_SESSION['quiz_score'] = 0;
     $_SESSION['quiz_feedback_message'] = '';
+    $_SESSION['quiz_completed_and_saved'] = false; // Nowa flaga do śledzenia, czy wynik został zapisany
 }
 
 $quiz_data = null;
@@ -27,13 +37,18 @@ if ($quiz_id > 0) {
     // Fetch quiz title
     $quiz_query = "SELECT nazwa FROM Quiz WHERE quiz_id = ?";
     $stmt = mysqli_prepare($db, $quiz_query);
-    mysqli_stmt_bind_param($stmt, 'i', $quiz_id);
-    mysqli_stmt_execute($stmt);
-    $quiz_result = mysqli_stmt_get_result($stmt);
-    if ($quiz_result && mysqli_num_rows($quiz_result) > 0) {
-        $quiz_data = mysqli_fetch_assoc($quiz_result);
+    if ($stmt) { // Sprawdź, czy przygotowanie zapytania się powiodło
+        mysqli_stmt_bind_param($stmt, 'i', $quiz_id);
+        mysqli_stmt_execute($stmt);
+        $quiz_result = mysqli_stmt_get_result($stmt);
+        if ($quiz_result && mysqli_num_rows($quiz_result) > 0) {
+            $quiz_data = mysqli_fetch_assoc($quiz_result);
+        }
+        mysqli_stmt_close($stmt);
+    } else {
+        error_log("Błąd przygotowania zapytania quiz_query: " . mysqli_error($db));
     }
-    mysqli_stmt_close($stmt);
+
 
     // Fetch questions and answers
     $questions_query = "
@@ -44,37 +59,40 @@ if ($quiz_id > 0) {
         ORDER BY p.pytanie_id, o.odpowiedzi_id;
     ";
     $stmt = mysqli_prepare($db, $questions_query);
-    mysqli_stmt_bind_param($stmt, 'i', $quiz_id);
-    mysqli_stmt_execute($stmt);
-    $questions_result = mysqli_stmt_get_result($stmt);
+    if ($stmt) { // Sprawdź, czy przygotowanie zapytania się powiodło
+        mysqli_stmt_bind_param($stmt, 'i', $quiz_id);
+        mysqli_stmt_execute($stmt);
+        $questions_result = mysqli_stmt_get_result($stmt);
 
-    if ($questions_result) {
-        $current_pytanie_id = null;
-        $question_item = null;
-        while ($row = mysqli_fetch_assoc($questions_result)) {
-            if ($row['pytanie_id'] !== $current_pytanie_id) {
-                if ($question_item !== null) {
-                    $questions[] = $question_item;
+        if ($questions_result) {
+            $current_pytanie_id = null;
+            $question_item = null;
+            while ($row = mysqli_fetch_assoc($questions_result)) {
+                if ($row['pytanie_id'] !== $current_pytanie_id) {
+                    if ($question_item !== null) {
+                        $questions[] = $question_item;
+                    }
+                    $current_pytanie_id = $row['pytanie_id'];
+                    $question_item = [
+                        'id' => $row['pytanie_id'],
+                        'text' => $row['question_text'],
+                        'answers' => []
+                    ];
                 }
-                $current_pytanie_id = $row['pytanie_id'];
-                $question_item = [
-                    'id' => $row['pytanie_id'],
-                    'text' => $row['question_text'],
-                    'answers' => []
+                $question_item['answers'][] = [
+                    'id' => $row['odpowiedzi_id'],
+                    'text' => $row['answer_text'],
+                    'is_correct' => (bool)$row['czy_poprawna']
                 ];
             }
-            $question_item['answers'][] = [
-                'id' => $row['odpowiedzi_id'],
-                'text' => $row['answer_text'],
-                'is_correct' => (bool)$row['czy_poprawna']
-            ];
+            if ($question_item !== null) { // Add the last question
+                $questions[] = $question_item;
+            }
         }
-        if ($question_item !== null) { // Add the last question
-            $questions[] = $question_item;
-        }
+        mysqli_stmt_close($stmt);
+    } else {
+        error_log("Błąd przygotowania zapytania questions_query: " . mysqli_error($db));
     }
-    mysqli_stmt_close($stmt);
-    mysqli_close($db);
 
     // Ensure $_SESSION['quiz_user_answers'] has entries for all questions
     // This makes sure array indexes match question indexes
@@ -149,6 +167,34 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             // Jesteśmy na ostatnim pytaniu i kliknięto "Następne" / "Zakończ Quiz"
             $current_idx++; // Przejdź za ostatnie pytanie, aby aktywować widok wyników
             $_SESSION['quiz_feedback_message'] = ''; // Clear feedback for results view
+
+            // === Zapisz wynik quizu do bazy danych, jeśli użytkownik jest zalogowany i wynik nie został jeszcze zapisany ===
+            // Dodatkowe sprawdzenia przed zapisem
+            error_log("Próba zapisu wyniku: zalogowany=" . ($zalogowany ? 'tak' : 'nie') . ", user_id=" . ($user_id ?? 'null') . ", total_questions=" . $total_questions . ", saved_flag=" . ($_SESSION['quiz_completed_and_saved'] ? 'true' : 'false'));
+
+            if ($zalogowany && $user_id !== null && $total_questions > 0 && !$_SESSION['quiz_completed_and_saved']) {
+                $wynik_liczbowy = $_SESSION['quiz_score'];
+                $maksymalny_wynik = $total_questions;
+                $current_quiz_id = $_SESSION['quiz_id']; // Upewnij się, że używasz ID aktualnego quizu
+
+                $insert_query = "INSERT INTO wyniki_quizow (user_id, quiz_id, wynik_liczbowy, maksymalny_wynik, data_rozwiazania) VALUES (?, ?, ?, ?, NOW())";
+                $stmt_insert = mysqli_prepare($db, $insert_query);
+                if ($stmt_insert) {
+                    mysqli_stmt_bind_param($stmt_insert, 'iiii', $user_id, $current_quiz_id, $wynik_liczbowy, $maksymalny_wynik);
+                    if (mysqli_stmt_execute($stmt_insert)) {
+                        $_SESSION['quiz_completed_and_saved'] = true; // Ustaw flagę, że wynik został zapisany
+                        error_log("Sukces: Wynik quizu zapisany do bazy danych. user_id: $user_id, quiz_id: $current_quiz_id, wynik: $wynik_liczbowy/$maksymalny_wynik");
+                    } else {
+                        // Logowanie błędu zapisu
+                        error_log("Błąd EXECUTE zapytania INSERT: " . mysqli_stmt_error($stmt_insert));
+                    }
+                    mysqli_stmt_close($stmt_insert);
+                } else {
+                    error_log("Błąd PREPARE zapytania INSERT: " . mysqli_error($db));
+                }
+            } else {
+                error_log("Wynik nie został zapisany: Zalogowany: " . ($zalogowany ? 'tak' : 'nie') . ", User ID: " . ($user_id ?? 'null') . ", Total Questions: " . $total_questions . ", Zapisano już: " . ($_SESSION['quiz_completed_and_saved'] ? 'tak' : 'nie'));
+            }
         }
     }
     // Obsługa przycisku "Poprzednie"
@@ -182,7 +228,8 @@ if ($total_questions > 0 && $current_question_index >= $total_questions) {
     $display_results_section = false; // Albo specjalna wiadomość
 }
 
-
+// Zamykamy połączenie z bazą danych na końcu skryptu
+mysqli_close($db);
 ?>
 <!DOCTYPE html>
 <html lang="pl">
