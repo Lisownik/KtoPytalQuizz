@@ -132,7 +132,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $db->commit();
         unset($_SESSION['form_data']); // Clear form data on successful submission
         $_SESSION['success'] = 'Quiz "' . $quiz_title . '" został ' . ($is_draft === 0 ? 'opublikowany!' : 'zapisany jako szkic!');
-        header('Location: ../profile.php'); // Redirect to profile or quiz details page
+        header('Location: ../quizzCreator.php'); // Redirect to profile or quiz details page
         exit();
 
     } catch (Exception $e) {
