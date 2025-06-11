@@ -1,227 +1,277 @@
 <?php
 session_start();
 $zalogowany = isset($_SESSION['zalogowany']) ? $_SESSION['zalogowany'] : false;
+
+// Initialize form data from session or empty arrays
+$quiz_title = $_SESSION['form_data']['quiz_title'] ?? '';
+$quiz_description = $_SESSION['form_data']['quiz_description'] ?? '';
+$questions_data = $_SESSION['form_data']['questions'] ?? [];
+
+// Clear form data from session after retrieval to avoid re-populating on refresh
+unset($_SESSION['form_data']);
 ?>
 <!DOCTYPE html>
 <html lang="pl">
 <head>
-    <meta charset="UTF-8">
-    <meta name="keywords" content="create quiz, quiz creator"/>
-    <meta name="description" content="Create amazing quizzes with our easy-to-use quiz creator"/>
-    <meta name="author" content="Same sigmy team"/>
-    <meta name="robots" content="none"/>
-    <link rel="stylesheet" href="style/universal.css">
-    <link rel="stylesheet" href="style/style.css">
-    <link rel="stylesheet" href="style/quizzCreator.css">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Create Quiz - Kto Pytał</title>
+	<meta charset="UTF-8">
+	<meta name="keywords" content="create quiz, quiz creator"/>
+	<meta name="description" content="Create amazing quizzes with our easy-to-use quiz creator"/>
+	<meta name="author" content="Same sigmy team"/>
+	<meta name="robots" content="none"/>
+	<link rel="stylesheet" href="style/universal.css">
+	<link rel="stylesheet" href="style/style.css">
+	<link rel="stylesheet" href="style/quizzCreator.css">
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Create Quiz - Kto Pytał</title>
 </head>
 <body>
 
 <div class="hamburger">
-    <input type="checkbox" id="mobile-menu-toggle">
-    <label for="mobile-menu-toggle" class="hamburger-btn">
-        <span></span>
-        <span></span>
-        <span></span>
-    </label>
-    <div class="mobile-nav-overlay"></div>
-    <nav class="mobile-nav">
-        <ul>
-            <li><a href="index.php">Home</a></li>
-            <li><a href="quizzCreator.php">Create Quizz</a></li>
-            <li><a href="explore.php">Explore</a></li>
-            <li><a href="profile.php">Profile</a></li>
-            <li><a href="history.php">History</a></li>
-        </ul>
-        <div class="mobile-auth">
+	<input type="checkbox" id="mobile-menu-toggle">
+	<label for="mobile-menu-toggle" class="hamburger-btn">
+		<span></span>
+		<span></span>
+		<span></span>
+	</label>
+	<div class="mobile-nav-overlay"></div>
+	<nav class="mobile-nav">
+		<ul>
+			<li><a href="index.php">Home</a></li>
+			<li><a href="quizzCreator.php">Create Quizz</a></li>
+			<li><a href="explore.php">Explore</a></li>
+			<li><a href="profile.php">Profile</a></li>
+			<li><a href="history.php">History</a></li>
+		</ul>
+		<div class="mobile-auth">
             <?php if ($zalogowany): ?>
-                <form method="post" action="php/logout.php">
-                    <button type="submit">Logout</button>
-                </form>
+				<form method="post" action="php/logout.php">
+					<button type="submit">Logout</button>
+				</form>
             <?php else: ?>
-                <a href="quizzCreator.php" class="mobile-login-btn">Sign In</a>
+				<a href="quizzCreator.php" class="mobile-login-btn">Sign In</a>
             <?php endif; ?>
-        </div>
-    </nav>
+		</div>
+	</nav>
 </div>
 
 <header>
-    <div>
-        <a href="index.php"><img src="assets/logo.png" alt="logo mózgu"></a>
-        <h2>Kto Pytał</h2>
-    </div>
-    <nav>
-        <ul>
-            <li><a href="index.php">Home</a></li>
-            <li><a href="quizzCreator.php" style="background: rgba(255, 255, 255, 0.1);">Create Quizz</a></li>
-            <li><a href="explore.php">Explore</a></li>
-            <li><a href="profile.php">Profile</a></li>
-            <li><a href="history.php">History</a></li>
-        </ul>
-    </nav>
-    <div class="header-auth">
+	<div>
+		<a href="index.php"><img src="assets/logo.png" alt="logo mózgu"></a>
+		<h2>Kto Pytał</h2>
+	</div>
+	<nav>
+		<ul>
+			<li><a href="index.php">Home</a></li>
+			<li><a href="quizzCreator.php" style="background: rgba(255, 255, 255, 0.1);">Create Quizz</a></li>
+			<li><a href="explore.php">Explore</a></li>
+			<li><a href="profile.php">Profile</a></li>
+			<li><a href="history.php">History</a></li>
+		</ul>
+	</nav>
+	<div class="header-auth">
         <?php if ($zalogowany): ?>
-            <form method="post" action="php/logout.php" class="logout-form">
-                <button type="submit" class="logout-btn">Logout</button>
-            </form>
+			<form method="post" action="php/logout.php" class="logout-form">
+				<button type="submit" class="logout-btn">Logout</button>
+			</form>
         <?php else: ?>
-            <a href="quizzCreator.php" class="signin-link">Sign In</a>
+			<a href="quizzCreator.php" class="signin-link">Sign In</a>
         <?php endif; ?>
-    </div>
+	</div>
 </header>
 
 <main class="container">
-    <!-- Komunikaty o błędach i sukcesie -->
     <?php if (isset($_SESSION['error'])): ?>
-        <div class="alert alert-error" style="background-color: #f8d7da; color: #721c24; padding: 12px; margin: 20px 0; border-radius: 4px; border: 1px solid #f5c6cb;">
+		<div class="alert alert-error" style="background-color: #f8d7da; color: #721c24; padding: 12px; margin: 20px 0; border-radius: 4px; border: 1px solid #f5c6cb;">
             <?php
             echo $_SESSION['error'];
             unset($_SESSION['error']);
             ?>
-        </div>
+		</div>
     <?php endif; ?>
 
     <?php if (isset($_SESSION['success'])): ?>
-        <div class="alert alert-success" style="background-color: #d4edda; color: #155724; padding: 12px; margin: 20px 0; border-radius: 4px; border: 1px solid #c3e6cb;">
+		<div class="alert alert-success" style="background-color: #d4edda; color: #155724; padding: 12px; margin: 20px 0; border-radius: 4px; border: 1px solid #c3e6cb;">
             <?php
             echo $_SESSION['success'];
             unset($_SESSION['success']);
             ?>
-        </div>
+		</div>
     <?php endif; ?>
 
-    <form id="quiz-form" method="post" action="php/saveQuiz.php">
-        <h2 class="create-quiz-title">Create New Quiz</h2>
+	<form id="quiz-form" method="post" action="php/saveQuiz.php">
+		<h2 class="create-quiz-title">Create New Quiz</h2>
 
-        <section class="form-group">
-            <label for="quiz-title">Quiz Title</label>
-            <input type="text" id="quiz-title" name="quiz_title" class="form-control" placeholder="Enter quiz title" required>
-        </section>
+		<section class="form-group">
+			<label for="quiz-title">Quiz Title</label>
+			<input type="text" id="quiz-title" name="quiz_title" class="form-control" placeholder="Enter quiz title" value="<?php echo htmlspecialchars($quiz_title); ?>" required>
+		</section>
 
-        <section class="form-group">
-            <label for="quiz-description">Description</label>
-            <textarea id="quiz-description" name="quiz_description" class="form-control" placeholder="Enter quiz description"></textarea>
-        </section>
+		<section class="form-group">
+			<label for="quiz-description">Description</label>
+			<textarea id="quiz-description" name="quiz_description" class="form-control" placeholder="Enter quiz description"><?php echo htmlspecialchars($quiz_description); ?></textarea>
+		</section>
 
-        <hr>
+		<hr>
 
-        <div id="questions-container">
-            <section class="question-container" data-question-number="1">
-                <div class="question-header">
-                    <h3 class="question-title">Question 1</h3>
-                    <button type="button" class="delete-btn">×</button>
-                </div>
+		<div id="questions-container">
+            <?php if (empty($questions_data)): ?>
+				<section class="question-container" data-question-number="1">
+					<div class="question-header">
+						<h3 class="question-title">Question 1</h3>
+						<button type="button" class="delete-btn">×</button>
+					</div>
 
-                <section class="form-group">
-                    <input type="text" name="questions[0][text]" class="form-control question-input" placeholder="Enter your question" required>
-                </section>
+					<section class="form-group">
+						<input type="text" name="questions[0][text]" class="form-control question-input" placeholder="Enter your question" required>
+					</section>
 
-                <div class="correct-answer-header">
-                    <h4>Select the correct answer(s)</h4>
-                    <p>Choose which of the options below are correct answers for this question. You can select multiple options.</p>
-                </div>
+					<div class="correct-answer-header">
+						<h4>Select the correct answer(s)</h4>
+						<p>Choose which of the options below are correct answers for this question. You can select multiple options.</p>
+					</div>
 
-                <section class="options-container">
-                    <div class="option-wrapper">
-                        <label class="correct-checkbox">
-                            <input type="checkbox" name="questions[0][correct][]" value="0">
-                            <span class="checkbox-custom"></span>
-                        </label>
-                        <span class="correct-label">Correct</span>
-                        <div class="option-input-wrapper">
-                            <input type="text" name="questions[0][options][]" class="form-control option-input" placeholder="Option 1" required>
-                        </div>
-                    </div>
-                    <div class="option-wrapper">
-                        <label class="correct-checkbox">
-                            <input type="checkbox" name="questions[0][correct][]" value="1">
-                            <span class="checkbox-custom"></span>
-                        </label>
-                        <span class="correct-label">Correct</span>
-                        <div class="option-input-wrapper">
-                            <input type="text" name="questions[0][options][]" class="form-control option-input" placeholder="Option 2" required>
-                        </div>
-                    </div>
-                    <div class="option-wrapper">
-                        <label class="correct-checkbox">
-                            <input type="checkbox" name="questions[0][correct][]" value="2">
-                            <span class="checkbox-custom"></span>
-                        </label>
-                        <span class="correct-label">Correct</span>
-                        <div class="option-input-wrapper">
-                            <input type="text" name="questions[0][options][]" class="form-control option-input" placeholder="Option 3">
-                        </div>
-                    </div>
-                    <div class="option-wrapper">
-                        <label class="correct-checkbox">
-                            <input type="checkbox" name="questions[0][correct][]" value="3">
-                            <span class="checkbox-custom"></span>
-                        </label>
-                        <span class="correct-label">Correct</span>
-                        <div class="option-input-wrapper">
-                            <input type="text" name="questions[0][options][]" class="form-control option-input" placeholder="Option 4">
-                        </div>
-                    </div>
-                </section>
-            </section>
-        </div>
+					<section class="options-container">
+						<div class="option-wrapper">
+							<label class="correct-checkbox">
+								<input type="checkbox" name="questions[0][correct][]" value="0">
+								<span class="checkbox-custom"></span>
+							</label>
+							<span class="correct-label">Correct</span>
+							<div class="option-input-wrapper">
+								<input type="text" name="questions[0][options][]" class="form-control option-input" placeholder="Option 1" required>
+							</div>
+						</div>
+						<div class="option-wrapper">
+							<label class="correct-checkbox">
+								<input type="checkbox" name="questions[0][correct][]" value="1">
+								<span class="checkbox-custom"></span>
+							</label>
+							<span class="correct-label">Correct</span>
+							<div class="option-input-wrapper">
+								<input type="text" name="questions[0][options][]" class="form-control option-input" placeholder="Option 2" required>
+							</div>
+						</div>
+						<div class="option-wrapper">
+							<label class="correct-checkbox">
+								<input type="checkbox" name="questions[0][correct][]" value="2">
+								<span class="checkbox-custom"></span>
+							</label>
+							<span class="correct-label">Correct</span>
+							<div class="option-input-wrapper">
+								<input type="text" name="questions[0][options][]" class="form-control option-input" placeholder="Option 3">
+							</div>
+						</div>
+						<div class="option-wrapper">
+							<label class="correct-checkbox">
+								<input type="checkbox" name="questions[0][correct][]" value="3">
+								<span class="checkbox-custom"></span>
+							</label>
+							<span class="correct-label">Correct</span>
+							<div class="option-input-wrapper">
+								<input type="text" name="questions[0][options][]" class="form-control option-input" placeholder="Option 4">
+							</div>
+						</div>
+					</section>
+				</section>
+            <?php else: ?>
+                <?php foreach ($questions_data as $q_index => $question): ?>
+					<section class="question-container" data-question-number="<?php echo $q_index + 1; ?>">
+						<div class="question-header">
+							<h3 class="question-title">Question <?php echo $q_index + 1; ?></h3>
+							<button type="button" class="delete-btn">×</button>
+						</div>
 
-        <button type="button" class="add-question-btn" id="add-question-btn">+ Add Question</button>
+						<section class="form-group">
+							<input type="text" name="questions[<?php echo $q_index; ?>][text]" class="form-control question-input" placeholder="Enter your question" value="<?php echo htmlspecialchars($question['text'] ?? ''); ?>" required>
+						</section>
 
-        <section class="button-container">
-            <button type="submit" name="save_draft" class="save-btn">Save Draft</button>
-            <button type="submit" name="publish_quiz" class="publish-btn">Publish Quiz</button>
-        </section>
-    </form>
+						<div class="correct-answer-header">
+							<h4>Select the correct answer(s)</h4>
+							<p>Choose which of the options below are correct answers for this question. You can select multiple options.</p>
+						</div>
+
+						<section class="options-container">
+                            <?php for ($o_index = 0; $o_index < 4; $o_index++): ?>
+                                <?php
+                                $option_text = $question['options'][$o_index] ?? '';
+                                $is_correct = in_array($o_index, $question['correct'] ?? []);
+                                ?>
+								<div class="option-wrapper <?php echo $is_correct ? 'correct-selected' : ''; ?>">
+									<label class="correct-checkbox">
+										<input type="checkbox" name="questions[<?php echo $q_index; ?>][correct][]" value="<?php echo $o_index; ?>" <?php echo $is_correct ? 'checked' : ''; ?>>
+										<span class="checkbox-custom"></span>
+									</label>
+									<span class="correct-label">Correct</span>
+									<div class="option-input-wrapper">
+										<input type="text" name="questions[<?php echo $q_index; ?>][options][]" class="form-control option-input" placeholder="Option <?php echo $o_index + 1; ?>" value="<?php echo htmlspecialchars($option_text); ?>" <?php echo ($o_index < 2) ? 'required' : ''; ?>>
+									</div>
+								</div>
+                            <?php endfor; ?>
+						</section>
+					</section>
+                <?php endforeach; ?>
+            <?php endif; ?>
+		</div>
+
+		<button type="button" class="add-question-btn" id="add-question-btn">+ Add Question</button>
+
+		<section class="button-container">
+			<button type="submit" name="save_draft" class="save-btn">Save Draft</button>
+			<button type="submit" name="publish_quiz" class="publish-btn">Publish Quiz</button>
+		</section>
+	</form>
 </main>
 
 <footer>
-    <div class="footer-content">
-        <div class="footer-section">
-            <h4>Kto Pytał</h4>
-            <p>Making quiz creation and sharing easier than ever. Build engaging quizzes that captivate your audience.</p>
-        </div>
-        <div class="footer-section">
-            <h4>Quick Links</h4>
-            <ul>
-                <li>About Us</li>
-                <li>Features</li>
-                <li>Pricing</li>
-                <li>Blog</li>
-            </ul>
-        </div>
-        <div class="footer-section">
-            <h4>Support</h4>
-            <ul>
-                <li>Help Center</li>
-                <li>Contact Us</li>
-                <li>Privacy Policy</li>
-                <li>Terms of Service</li>
-            </ul>
-        </div>
-        <div class="footer-section">
-            <h4>Follow Us</h4>
-            <ul>
-                <li>Facebook</li>
-                <li>Twitter</li>
-                <li>Instagram</li>
-                <li>LinkedIn</li>
-            </ul>
-        </div>
-    </div>
-    <div class="footer-bottom">
-        <p>© <?php echo date('Y'); ?> Kto Pytał. All rights reserved.</p>
-    </div>
+	<div class="footer-content">
+		<div class="footer-section">
+			<h4>Kto Pytał</h4>
+			<p>Making quiz creation and sharing easier than ever. Build engaging quizzes that captivate your audience.</p>
+		</div>
+		<div class="footer-section">
+			<h4>Quick Links</h4>
+			<ul>
+				<li>About Us</li>
+				<li>Features</li>
+				<li>Pricing</li>
+				<li>Blog</li>
+			</ul>
+		</div>
+		<div class="footer-section">
+			<h4>Support</h4>
+			<ul>
+				<li>Help Center</li>
+				<li>Contact Us</li>
+				<li>Privacy Policy</li>
+				<li>Terms of Service</li>
+			</ul>
+		</div>
+		<div class="footer-section">
+			<h4>Follow Us</h4>
+			<ul>
+				<li>Facebook</li>
+				<li>Twitter</li>
+				<li>Instagram</li>
+				<li>LinkedIn</li>
+			</ul>
+		</div>
+	</div>
+	<div class="footer-bottom">
+		<p>© <?php echo date('Y'); ?> Kto Pytał. All rights reserved.</p>
+	</div>
 </footer>
 
 <script src="js/mobile-menu.js"></script>
 <script>
     document.addEventListener('DOMContentLoaded', function() {
-        let questionCounter = 1;
+        // Initialize questionCounter based on existing questions
+        let questionCounter = document.querySelectorAll('.question-container').length;
+        if (questionCounter === 0) {
+            questionCounter = 1; // Ensure it starts at 1 if no questions are pre-populated
+        }
 
         const addQuestionBtn = document.getElementById('add-question-btn');
         const questionsContainer = document.getElementById('questions-container');
@@ -231,7 +281,11 @@ $zalogowany = isset($_SESSION['zalogowany']) ? $_SESSION['zalogowany'] : false;
             e.preventDefault();
             e.stopPropagation();
 
-            questionCounter++;
+            // Only increment if there was at least one question already, or if starting fresh
+            if (questionsContainer.querySelectorAll('.question-container').length > 0 || questionCounter === 1) {
+                questionCounter++;
+            }
+
 
             // Tworzenie nowego kontenera pytania
             const newQuestionHTML = `
@@ -321,7 +375,7 @@ $zalogowany = isset($_SESSION['zalogowany']) ? $_SESSION['zalogowany'] : false;
             }
         }
 
-        // Dodanie event listenerów dla pierwszego pytania
+        // Add event listeners for already existing questions (on page load)
         addCheckboxListeners();
 
         // Obsługa usuwania pytań (delegacja zdarzeń)

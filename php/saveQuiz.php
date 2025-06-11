@@ -1,196 +1,158 @@
 <?php
 session_start();
+require_once("../config/db.php"); // Adjust path if necessary
 
-// Sprawdzenie czy użytkownik jest zalogowany
-if (!isset($_SESSION['zalogowany']) || !$_SESSION['zalogowany']) {
-    header('Location: ../index.php');
+if (mysqli_connect_errno()) {
+    $_SESSION['error'] = 'Nie udało się połączyć z bazą danych: ' . mysqli_connect_error();
+    header('Location: ../quizzCreator.php');
     exit();
 }
 
-// Konfiguracja bazy danych - dostosuj do swoich ustawień
-$host = 'localhost';
-$username = 'root'; // Zmień na swój username
-$password = ''; // Zmień na swoje hasło
-$database = 'ktopytalquizz'; // Nazwa bazy danych z SQL
-
-// Połączenie z bazą danych
-$db = mysqli_connect($host, $username, $password, $database);
-
-// Sprawdzenie połączenia
-if (!$db) {
-    die("Connection failed: " . mysqli_connect_error());
+// Function to sanitize input data
+function sanitize_data($data) {
+    return htmlspecialchars(trim($data));
 }
 
-// Ustawienie kodowania
-mysqli_set_charset($db, "utf8mb4");
-
-// Sprawdzenie czy formularz został wysłany
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    // Store all submitted form data in session for repopulation
+    $_SESSION['form_data'] = $_POST;
 
-    // Pobieranie danych z formularza
-    $quiz_nazwa = mysqli_real_escape_string($db, trim($_POST['quiz_title'] ?? ''));
-    $quiz_opis = mysqli_real_escape_string($db, trim($_POST['quiz_description'] ?? ''));
-    $questions = $_POST['questions'] ?? [];
-
-    // Sprawdzenie czy typ akcji (publish czy draft)
-    $is_draft = isset($_POST['save_draft']) ? 1 : 0;
-
-    // Walidacja podstawowych danych
-    if (empty($quiz_nazwa)) {
-        $_SESSION['error'] = 'Nazwa quizu jest wymagana!';
+    // Basic validation: Check if quiz title and description are set
+    if (empty($_POST['quiz_title'])) {
+        $_SESSION['error'] = 'Tytuł quizu jest wymagany.';
+        header('Location: ../quizzCreator.php');
+        exit();
+    }
+    if (empty($_POST['quiz_description'])) {
+        $_SESSION['error'] = 'Opis quizu jest wymagany.';
         header('Location: ../quizzCreator.php');
         exit();
     }
 
-    if (empty($questions) || count($questions) == 0) {
-        $_SESSION['error'] = 'Quiz musi zawierać przynajmniej jedno pytanie!';
+    // Check if at least one question exists
+    if (!isset($_POST['questions']) || empty($_POST['questions'])) {
+        $_SESSION['error'] = 'Quiz musi zawierać przynajmniej jedno pytanie.';
         header('Location: ../quizzCreator.php');
         exit();
     }
 
-    // Walidacja pytań
-    foreach ($questions as $index => $question) {
-        if (empty(trim($question['text'] ?? ''))) {
-            $_SESSION['error'] = 'Wszystkie pytania muszą mieć treść!';
+    $quiz_title = sanitize_data($_POST['quiz_title']);
+    $quiz_description = sanitize_data($_POST['quiz_description']);
+    $questions = $_POST['questions']; // Array of questions
+
+    // Validate each question and its options
+    foreach ($questions as $q_index => $question) {
+        if (empty($question['text'])) {
+            $_SESSION['error'] = 'Pytanie ' . ($q_index + 1) . ' nie może być puste.';
             header('Location: ../quizzCreator.php');
             exit();
         }
 
-        $options = $question['options'] ?? [];
-        $valid_options = array_filter($options, function($option) {
-            return !empty(trim($option));
-        });
-
-        if (count($valid_options) < 2) {
-            $_SESSION['error'] = 'Każde pytanie musi mieć przynajmniej 2 opcje odpowiedzi!';
+        if (!isset($question['options']) || count($question['options']) < 2) { // At least 2 options
+            $_SESSION['error'] = 'Pytanie ' . ($q_index + 1) . ' musi mieć przynajmniej dwie opcje.';
             header('Location: ../quizzCreator.php');
             exit();
         }
 
-        // Sprawdzenie czy wybrano przynajmniej jedną poprawną odpowiedź
-        $correct_answers = $question['correct'] ?? [];
-        if (empty($correct_answers)) {
-            $_SESSION['error'] = 'Każde pytanie musi mieć przynajmniej jedną poprawną odpowiedź!';
+        foreach ($question['options'] as $o_index => $option_text) {
+            if ($o_index < 2 && empty($option_text)) { // First two options are required
+                $_SESSION['error'] = 'Opcje 1 i 2 dla pytania ' . ($q_index + 1) . ' są wymagane.';
+                header('Location: ../quizzCreator.php');
+                exit();
+            }
+        }
+
+        if (!isset($question['correct']) || empty($question['correct'])) {
+            $_SESSION['error'] = 'Pytanie ' . ($q_index + 1) . ' musi mieć wybraną przynajmniej jedną poprawną odpowiedź.';
             header('Location: ../quizzCreator.php');
             exit();
         }
     }
 
-    // Rozpoczęcie transakcji
-    mysqli_autocommit($db, FALSE);
+    // Assuming user_id is available in the session after login
+    $user_id = $_SESSION['user_id'] ?? null; // You need to set $_SESSION['user_id'] on login
+
+    if (!$user_id) {
+        $_SESSION['error'] = 'Musisz być zalogowany, aby utworzyć quiz.';
+        header('Location: ../index.php'); // Redirect to login page if not logged in
+        exit();
+    }
+
+    // Determine quiz draft status based on 'publish_quiz' checkbox
+    // If 'publish_quiz' is set, it means it's not a draft (is_draft = 0)
+    // If 'publish_quiz' is NOT set, it means it IS a draft (is_draft = 1)
+    $is_draft = isset($_POST['publish_quiz']) ? 0 : 1; // 0 for published, 1 for draft
+
+    // Start a transaction
+    $db->begin_transaction();
 
     try {
-        // 1. Zapisanie quizu do tabeli 'quiz'
-        $user_id = $_SESSION['user_id'] ?? 1; // Zakładam że masz user_id w sesji
-        $current_date = date('Y-m-d H:i:s');
-        $poziom_trudnosci = 1; // Domyślny poziom trudności - można rozszerzyć w przyszłości
-
-        $quiz_sql = "INSERT INTO quiz (nazwa, opis, poziom_trudnosci, data_utworzenia, user_id, draft) VALUES (?, ?, ?, ?, ?, ?)";
-        $quiz_stmt = mysqli_prepare($db, $quiz_sql);
-
-        if (!$quiz_stmt) {
-            throw new Exception("Prepare failed: " . mysqli_error($db));
+        // Insert quiz into 'quiz' table, using 'draft' column and removing 'data_aktualizacji'
+        $stmt_quiz = $db->prepare("INSERT INTO quiz (user_id, nazwa, opis, data_utworzenia, draft) VALUES (?, ?, ?, NOW(), ?)");
+        if (!$stmt_quiz) {
+            throw new Exception($db->error);
         }
+        $stmt_quiz->bind_param("isis", $user_id, $quiz_title, $quiz_description, $is_draft);
+        $stmt_quiz->execute();
+        $quiz_id = $db->insert_id;
+        $stmt_quiz->close();
 
-        mysqli_stmt_bind_param($quiz_stmt, "ssissi", $quiz_nazwa, $quiz_opis, $poziom_trudnosci, $current_date, $user_id, $is_draft);
-
-        if (!mysqli_stmt_execute($quiz_stmt)) {
-            throw new Exception("Execute failed: " . mysqli_stmt_error($quiz_stmt));
-        }
-
-        $quiz_id = mysqli_insert_id($db);
-        mysqli_stmt_close($quiz_stmt);
-
-        if (!$quiz_id) {
-            throw new Exception("Nie udało się utworzyć quizu");
-        }
-
-        // 2. Zapisanie pytań do tabeli 'pytanie'
-        foreach ($questions as $question_order => $question_data) {
-            $question_text = mysqli_real_escape_string($db, trim($question_data['text']));
-            $wyjasnienie = null; // Można rozszerzyć w przyszłości o wyjaśnienia
-
-            $pytanie_sql = "INSERT INTO pytanie (Treść, Wyjaśnienie, quiz_id) VALUES (?, ?, ?)";
-            $pytanie_stmt = mysqli_prepare($db, $pytanie_sql);
-
-            if (!$pytanie_stmt) {
-                throw new Exception("Prepare failed for pytanie: " . mysqli_error($db));
+        // Insert questions and answers
+        foreach ($questions as $q_index => $question) {
+            $question_text = sanitize_data($question['text']);
+            // Note: The 'pytanie' table has 'Treść' (capital T)
+            $stmt_question = $db->prepare("INSERT INTO pytanie (quiz_id, Treść) VALUES (?, ?)");
+            if (!$stmt_question) {
+                throw new Exception($db->error);
             }
+            $stmt_question->bind_param("is", $quiz_id, $question_text);
+            $stmt_question->execute();
+            $pytanie_id = $db->insert_id;
+            $stmt_question->close();
 
-            mysqli_stmt_bind_param($pytanie_stmt, "ssi", $question_text, $wyjasnienie, $quiz_id);
+            foreach ($question['options'] as $o_index => $option_text) {
+                $option_text_sanitized = sanitize_data($option_text);
+                $is_correct = in_array($o_index, $question['correct'] ?? []) ? 1 : 0;
 
-            if (!mysqli_stmt_execute($pytanie_stmt)) {
-                throw new Exception("Execute failed for pytanie: " . mysqli_stmt_error($pytanie_stmt));
-            }
-
-            $pytanie_id = mysqli_insert_id($db);
-            mysqli_stmt_close($pytanie_stmt);
-
-            if (!$pytanie_id) {
-                throw new Exception("Nie udało się utworzyć pytania");
-            }
-
-            // 3. Zapisanie opcji odpowiedzi do tabeli 'odpowiedzi'
-            $options = $question_data['options'] ?? [];
-            $correct_answers = $question_data['correct'] ?? [];
-
-            foreach ($options as $option_index => $option_text) {
-                $option_text = trim($option_text);
-
-                // Pomijamy puste opcje
-                if (empty($option_text)) {
+                // Ensure the option text is not empty if it's one of the required first two options
+                // or if it's marked as correct.
+                if (($o_index < 2 && empty($option_text_sanitized)) || (empty($option_text_sanitized) && $is_correct)) {
+                    // Skip inserting empty non-required options that are not marked as correct
+                    continue;
+                }
+                // If it's empty but not correct and not one of the first two required, also skip.
+                // This ensures we don't insert totally empty options.
+                if (empty($option_text_sanitized) && !$is_correct && $o_index >= 2) {
                     continue;
                 }
 
-                $option_text = mysqli_real_escape_string($db, $option_text);
-
-                // Sprawdzenie czy ta opcja jest poprawna
-                $czy_poprawna = in_array((string)$option_index, $correct_answers) ? 1 : 0;
-
-                $odpowiedzi_sql = "INSERT INTO odpowiedzi (treść_odpowiedzi, czy_poprawna, pytanie_id) VALUES (?, ?, ?)";
-                $odpowiedzi_stmt = mysqli_prepare($db, $odpowiedzi_sql);
-
-                if (!$odpowiedzi_stmt) {
-                    throw new Exception("Prepare failed for odpowiedzi: " . mysqli_error($db));
+                // Note: The 'odpowiedzi' table has 'treść_odpowiedzi'
+                $stmt_answer = $db->prepare("INSERT INTO odpowiedzi (pytanie_id, treść_odpowiedzi, czy_poprawna) VALUES (?, ?, ?)");
+                if (!$stmt_answer) {
+                    throw new Exception($db->error);
                 }
-
-                mysqli_stmt_bind_param($odpowiedzi_stmt, "sii", $option_text, $czy_poprawna, $pytanie_id);
-
-                if (!mysqli_stmt_execute($odpowiedzi_stmt)) {
-                    throw new Exception("Execute failed for odpowiedzi: " . mysqli_stmt_error($odpowiedzi_stmt));
-                }
-
-                mysqli_stmt_close($odpowiedzi_stmt);
+                $stmt_answer->bind_param("isi", $pytanie_id, $option_text_sanitized, $is_correct);
+                $stmt_answer->execute();
+                $stmt_answer->close();
             }
         }
 
-        // Zatwierdzenie transakcji
-        mysqli_commit($db);
-
-        // Ustawienie komunikatu sukcesu
-        if ($is_draft) {
-            $_SESSION['success'] = 'Quiz został zapisany jako szkic!';
-        } else {
-            $_SESSION['success'] = 'Quiz został pomyślnie opublikowany!';
-        }
-
-        // Przekierowanie do strony z quizami lub profilu
-        header('Location: ../quizzCreator.php');
+        $db->commit();
+        unset($_SESSION['form_data']); // Clear form data on successful submission
+        $message_status = $is_draft === 0 ? 'opublikowany!' : 'zapisany jako szkic!';
+        $_SESSION['success'] = 'Quiz "' . $quiz_title . '" został ' . $message_status;
+        header('Location: ../quizzCreator.php'); // Redirect to profile or quiz details page
+        exit();
 
     } catch (Exception $e) {
-        // Wycofanie transakcji w przypadku błędu
-        mysqli_rollback($db);
-
-        $_SESSION['error'] = 'Błąd podczas zapisywania quizu: ' . $e->getMessage();
+        $db->rollback();
+        $_SESSION['error'] = 'Wystąpił błąd podczas zapisywania quizu: ' . $e->getMessage();
         header('Location: ../quizzCreator.php');
+        exit();
     }
-
 } else {
-    // Jeśli nie jest to POST request
+    // If accessed directly without POST
     header('Location: ../quizzCreator.php');
+    exit();
 }
-
-// Zamknięcie połączenia
-mysqli_close($db);
-exit();
 ?>
