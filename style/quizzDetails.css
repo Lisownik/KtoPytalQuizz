@@ -1,0 +1,365 @@
+/* Quiz Details Page Styles */
+
+.quiz-details-main {
+    min-height: calc(100vh - 140px); /* Adjust based on your header/footer height */
+    background: var(--color-bg-light); /* Ustawienie tła na białe */
+    padding: 3rem 0; /* Increased top/bottom padding */
+    display: flex; /* Use flex to center content vertically if needed */
+    align-items: flex-start; /* Align content to the top */
+}
+
+.quiz-details-container {
+    max-width: var(--max-width); /* Use your defined max-width */
+    width: 100%; /* Ensure it takes full width up to max-width */
+    margin: 0 auto;
+    padding: 0 2rem; /* Increased side padding */
+}
+
+/* Quiz Information Card */
+.quiz-info-card {
+    background: var(--color-bg-light); /* Use light background color */
+    border-radius: var(--border-radius-lg); /* Use large border-radius */
+    padding: 3rem; /* Increased padding */
+    margin-bottom: 2.5rem; /* Adjusted margin */
+    box-shadow: var(--shadow-xl); /* Stronger shadow */
+    position: relative;
+    overflow: hidden;
+    border: 1px solid var(--color-gray-100); /* Subtle border */
+}
+
+.quiz-info-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 6px; /* Slightly thicker top border */
+    background: linear-gradient(90deg, var(--color-primary), var(--color-tertiary), var(--color-secondary), var(--color-accent)); /* Use your full palette */
+    background-size: 300% 100%;
+    animation: gradientShift 3s ease infinite;
+}
+
+@keyframes gradientShift {
+    0%, 100% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+}
+
+/* Quiz Header */
+.quiz-header {
+    text-align: center;
+    margin-bottom: 2.5rem; /* Increased margin */
+    padding-bottom: 2rem; /* Increased padding */
+    border-bottom: 2px solid var(--color-gray-100); /* Use gray-100 for border */
+}
+
+.quiz-title {
+    font-size: 3rem; /* Larger title */
+    color: var(--color-gray-900); /* Darker text for title */
+    margin-bottom: 1.2rem;
+    font-weight: 800;
+    line-height: 1.2;
+    background: linear-gradient(135deg, var(--color-primary), var(--color-tertiary)); /* Primary and tertiary gradient */
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    font-family: var(--font-secondary); /* Use secondary font for titles */
+}
+
+.quiz-meta {
+    display: flex;
+    justify-content: center;
+    gap: 2.5rem; /* Increased gap */
+    flex-wrap: wrap;
+    margin-top: 1.5rem;
+}
+
+.quiz-author { /* Usunięto .quiz-date */
+    color: var(--color-primary); /* Primary color for author */
+    font-weight: 600;
+    font-size: 1.05rem; /* Zachowaj spójny rozmiar z innymi meta */
+}
+
+
+/* Quiz Description */
+.quiz-description {
+    margin-bottom: 2.5rem; /* Adjusted margin */
+}
+
+.quiz-description h2 {
+    color: var(--color-gray-800); /* Darker gray for heading */
+    font-size: 1.8rem; /* Larger heading */
+    font-weight: 700; /* Bolder */
+    margin-bottom: 1.2rem;
+    font-family: var(--font-secondary);
+}
+
+.quiz-description p {
+    color: var(--color-gray-700); /* Slightly darker gray for body text */
+    line-height: 1.7;
+    font-size: 1.15rem; /* Slightly larger text */
+    margin-bottom: 1.2rem;
+}
+
+.quiz-description p:last-child {
+    margin-bottom: 0;
+}
+
+/* Quiz Stats */
+.quiz-stats {
+    display: flex;
+    justify-content: space-around; /* Zmienione na space-around dla dwóch elementów */
+    gap: 1.5rem; /* Increased gap */
+    margin-top: 2.5rem;
+    padding-top: 2.5rem;
+    border-top: 2px solid var(--color-gray-100); /* Use gray-100 for border */
+}
+
+.stat-item {
+    text-align: center;
+    flex: 1; /* Pozostaw flex:1 dla rozłożenia w dwóch kolumnach */
+    background: var(--color-gray-50); /* Light background for stat items */
+    padding: 1.5rem;
+    border-radius: var(--border-radius);
+    border: 1px solid var(--color-gray-100);
+    transition: var(--transition);
+}
+
+.stat-item:hover {
+    transform: translateY(-5px); /* Lift effect */
+    box-shadow: var(--shadow-md); /* Subtle shadow on hover */
+}
+
+.stat-number {
+    display: block;
+    font-size: 2.5rem; /* Larger numbers */
+    font-weight: 800;
+    color: var(--color-secondary); /* Use secondary color for stats */
+    line-height: 1;
+    margin-bottom: 0.6rem;
+    font-family: var(--font-secondary);
+}
+
+.stat-label {
+    display: block;
+    font-size: 0.95rem; /* Slightly larger label */
+    color: var(--color-gray-600);
+    text-transform: uppercase;
+    font-weight: 600;
+    letter-spacing: 0.8px; /* More letter spacing */
+}
+
+/* Action Buttons */
+.quiz-actions {
+    background: var(--color-bg-light); /* Use light background */
+    border-radius: var(--border-radius-lg); /* Larger border-radius */
+    padding: 2.5rem; /* Increased padding */
+    margin-bottom: 2.5rem; /* Adjusted margin */
+    box-shadow: var(--shadow-lg); /* Stronger shadow */
+    border: 1px solid var(--color-gray-100); /* Subtle border */
+}
+
+.action-buttons {
+    display: flex;
+    gap: 1.8rem; /* Increased gap */
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.75rem; /* Increased icon gap */
+    padding: 1.1rem 2.2rem; /* Adjusted padding */
+    border: none;
+    border-radius: 25px; /* Bardziej zaokrąglone rogi (np. 25px zamiast full-pill) */
+    font-size: 1.05rem; /* Slightly larger font */
+    font-weight: 600;
+    text-decoration: none;
+    transition: var(--transition);
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+    box-shadow: var(--shadow-md); /* Subtle shadow for buttons */
+}
+
+.btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+    transition: left 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94); /* Smooth cubic-bezier transition */
+}
+
+.btn:hover::before {
+    left: 100%;
+}
+
+.btn-large {
+    padding: 1.4rem 2.8rem; /* Larger padding for large button */
+    font-size: 1.2rem;
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-tertiary) 100%); /* Primary-tertiary gradient */
+    color: white;
+    box-shadow: 0 6px 20px rgba(5, 102, 141, 0.3); /* Shadow based on primary color */
+}
+
+.btn-primary:hover {
+    transform: translateY(-3px); /* More pronounced lift */
+    box-shadow: 0 10px 30px rgba(5, 102, 141, 0.5); /* Stronger shadow on hover */
+}
+
+.btn-secondary {
+    background: var(--color-bg-light); /* White background */
+    color: var(--color-primary); /* Primary color text */
+    border: 2px solid var(--color-primary); /* Primary color border */
+    box-shadow: 0 6px 20px rgba(5, 102, 141, 0.15); /* Lighter shadow */
+}
+
+.btn-secondary:hover {
+    background: var(--color-primary); /* Primary background on hover */
+    color: var(--color-text-light); /* White text on hover */
+    transform: translateY(-3px);
+    box-shadow: 0 10px 30px rgba(5, 102, 141, 0.3);
+}
+
+/* Additional Info (Cała sekcja usunięta z CSS) */
+
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .quiz-details-main {
+        padding: 2rem 0;
+    }
+
+    .quiz-details-container {
+        padding: 0 1rem;
+    }
+
+    .quiz-info-card {
+        padding: 2rem 1.5rem;
+        margin-bottom: 2rem;
+    }
+
+    .quiz-title {
+        font-size: 2.2rem; /* Adjusted font size */
+    }
+
+    .quiz-meta {
+        flex-direction: column;
+        gap: 0.8rem;
+    }
+
+    .quiz-stats {
+        gap: 1rem;
+        padding-top: 1.5rem;
+        margin-top: 1.5rem;
+    }
+
+    .stat-number {
+        font-size: 2rem;
+    }
+
+    .stat-label {
+        font-size: 0.85rem;
+    }
+
+    .quiz-actions {
+        padding: 2rem;
+        margin-bottom: 2rem;
+    }
+
+    .action-buttons {
+        flex-direction: column;
+        gap: 1.2rem;
+    }
+
+    .btn {
+        width: 100%;
+        justify-content: center;
+        padding: 1rem 1.5rem;
+    }
+
+    .btn-large {
+        padding: 1.1rem 1.8rem;
+    }
+
+    /* Usunięto media query dla additional-info */
+}
+
+@media (max-width: 480px) {
+    .quiz-info-card {
+        padding: 1.5rem 1rem;
+    }
+
+    .quiz-title {
+        font-size: 1.8rem;
+    }
+
+    .quiz-description h2 {
+        font-size: 1.5rem;
+    }
+
+    .quiz-description p {
+        font-size: 1rem;
+    }
+
+    .quiz-stats {
+        flex-direction: column; /* Ustawienie na kolumnę dla małych ekranów */
+        gap: 1rem;
+    }
+
+    .stat-item {
+        padding: 0.8rem;
+        background: var(--color-gray-50); /* Use gray-50 for small screen stat item background */
+        border-radius: var(--border-radius);
+    }
+
+    .stat-number {
+        font-size: 1.8rem;
+    }
+
+    .stat-label {
+        font-size: 0.8rem;
+    }
+
+    .quiz-actions {
+        padding: 1.5rem;
+    }
+
+    /* Usunięto media query dla additional-info */
+}
+
+/* Animation Classes */
+.fade-in {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: var(--transition); /* Use universal transition */
+}
+
+.fade-in.show {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* Focus States for Accessibility */
+.btn:focus {
+    outline: 2px solid var(--color-primary); /* Use primary color for outline */
+    outline-offset: 3px; /* Increased offset */
+    border-radius: 25px; /* Dopasowanie do nowych rogów przycisku */
+}
+
+/* Reduced Motion */
+@media (prefers-reduced-motion: reduce) {
+    .quiz-info-card::before,
+    .btn,
+    .fade-in {
+        animation: none !important; /* Force no animation */
+        transition: none !important; /* Force no transition */
+    }
+}
