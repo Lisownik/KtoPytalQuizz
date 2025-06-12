@@ -202,10 +202,10 @@ mysqli_close($db);
 	<nav>
 		<ul>
 			<li><a href="index.php">Home</a></li>
-			<li><a href="quizzCreator.php">Create Quiz</a></li>
+			<li><a href="quizzCreator.php">Create Quizz</a></li>
 			<li><a href="explore.php">Explore</a></li>
             <li><a href="history.php">History</a></li>
-            <li><a id="selected-page" href="profile.php" style="background: rgba(255, 255, 255, 0.1);">Profile</a></li>
+            <li><a id="selected-page" href="profile.php">Profile</a></li>
 		</ul>
 	</nav>
 	<div class="header-auth">
