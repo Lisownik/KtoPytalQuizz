@@ -250,8 +250,9 @@ mysqli_close($db);
 			<li><a href="index.php">Start</a></li>
 			<li><a href="quizzCreator.php">Stwórz Quiz</a></li>
 			<li><a href="explore.php">Odkryj</a></li>
-			<li><a href="profile.php">Mój profil</a></li>
 			<li><a href="history.php">Moja historia</a></li>
+            <li><a href="ranking.php">Ranking</a></li>
+            <li><a href="profile.php">Profil</a></li>
             <?php if ($zalogowany && isset($_SESSION['user_role']) && $_SESSION['user_role'] === 'admin'): ?>
 				<li><a id="selected-page" href="admin.php">Panel Admina</a></li>
             <?php endif; ?>
@@ -281,8 +282,9 @@ mysqli_close($db);
 			<li><a href="quizzCreator.php">Stwórz Quiz</a></li>
 			<li><a href="explore.php">Odkryj</a></li>
 			<li><a href="history.php">Moja historia</a></li>
+            <li><a href="ranking.php">Ranking</a></li>
             <?php if ($zalogowany): ?>
-				<li><a href="profile.php">Mój profil</a></li>
+                <li><a href="profile.php">Profil</a></li>
             <?php endif; ?>
             <?php if ($zalogowany && isset($_SESSION['user_role']) && $_SESSION['user_role'] === 'admin'): ?>
 				<li><a id="selected-page" href="admin.php" style="background: rgba(255, 255, 255, 0.1);">Panel Admina</a></li>

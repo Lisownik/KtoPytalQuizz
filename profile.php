@@ -178,11 +178,12 @@ mysqli_close($db); // Zamykamy połączenie z bazą danych
 	<div class="mobile-nav-overlay"></div>
 	<nav class="mobile-nav">
 		<ul>
-			<li><a href="index.php">Start</a></li>
-			<li><a href="quizzCreator.php">Stwórz Quiz</a></li>
-			<li><a href="explore.php">Znajdź</a></li>
-			<li><a id="selected-page" href="profile.php">Profil</a></li>
-			<li><a href="history.php">Historia</a></li>
+            <li><a href="index.php">Strona główna</a></li>
+            <li><a href="quizzCreator.php">Stwórz Quiz</a></li>
+            <li><a href="explore.php">Odkrywaj</a></li>
+            <li><a href="ranking.php">Ranking</a></li>
+            <li><a href="history.php">Historia</a></li>
+            <li><a id="selected-page" href="profile.php">Profil</a></li>
 		</ul>
 		<div class="mobile-auth">
 			<form method="post" action="php/logout.php">
@@ -201,11 +202,12 @@ mysqli_close($db); // Zamykamy połączenie z bazą danych
 	</div>
 	<nav>
 		<ul>
-			<li><a href="index.php">Start</a></li>
-			<li><a href="quizzCreator.php">Stwórz Quiz</a></li>
-			<li><a href="explore.php">Znajdź</a></li>
-			<li><a id="selected-page" href="profile.php">Profil</a></li>
-			<li><a href="history.php">Historia</a></li>
+            <li><a href="index.php">Strona główna</a></li>
+            <li><a href="quizzCreator.php">Stwórz Quiz</a></li>
+            <li><a href="explore.php">Odkrywaj</a></li>
+            <li><a href="ranking.php">Ranking</a></li>
+            <li><a href="history.php">Historia</a></li>
+            <li><a id="selected-page" href="profile.php">Profil</a></li>
 		</ul>
 	</nav>
 	<div class="header-auth">

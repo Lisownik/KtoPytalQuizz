@@ -309,12 +309,13 @@ mysqli_close($db);
 	<div class="mobile-nav-overlay"></div>
 	<nav class="mobile-nav">
 		<ul>
-			<li><a href="index.php">Home</a></li>
-			<li><a href="quizzCreator.php">Create Quizz</a></li>
-			<li><a href="explore.php">Explore</a></li>
+            <li><a href="index.php">Strona główna</a></li>
+            <li><a id="selected-page" href="quizzCreator.php">Stwórz Quiz</a></li>
+            <li><a href="explore.php">Odkrywaj</a></li>
+            <li><a href="ranking.php">Ranking</a></li>
             <?php if ($zalogowany): ?>
-				<li><a href="profile.php">Profile</a></li>
-				<li><a href="history.php">History</a></li>
+                <li><a href="history.php">History</a></li>
+                <li><a href="profile.php">Profile</a></li>
             <?php else: ?>
 				<li><a href="#" class="mobile-login-btn">Sign In</a></li>
             <?php endif; ?>
@@ -338,12 +339,13 @@ mysqli_close($db);
 	</div>
 	<nav>
 		<ul>
-			<li><a href="index.php">Home</a></li>
-			<li><a href="quizzCreator.php">Create Quizz</a></li>
-			<li><a href="explore.php">Explore</a></li>
+            <li><a href="index.php">Strona główna</a></li>
+            <li><a id="selected-page" href="quizzCreator.php">Stwórz Quiz</a></li>
+            <li><a href="explore.php">Odkrywaj</a></li>
+            <li><a href="ranking.php">Ranking</a></li>
             <?php if ($zalogowany): ?>
-				<li><a href="profile.php">Profile</a></li>
-				<li><a href="history.php">History</a></li>
+                <li><a href="history.php">Historia</a></li>
+                <li><a href="profile.php">Profil</a></li>
             <?php endif; ?>
 		</ul>
 	</nav>

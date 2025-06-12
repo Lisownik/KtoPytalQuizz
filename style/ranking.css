@@ -1,0 +1,251 @@
+/* Styling for Ranking Page (Dodaj to na końcu universal.css) */
+
+.ranking-main {
+    min-height: calc(100vh - 140px); /* Adjust based on your header/footer height */
+    background: var(--color-bg-light); /* Białe tło */
+    padding: 3rem 0;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+}
+
+.ranking-section {
+    max-width: var(--max-width);
+    width: 100%;
+    margin: 0 auto;
+    padding: 0 2rem;
+    text-align: center;
+}
+
+.ranking-section h1 {
+    font-size: 3rem;
+    color: var(--color-gray-900);
+    margin-bottom: 1.2rem;
+    font-weight: 800;
+    line-height: 1.2;
+    background: linear-gradient(135deg, var(--color-primary), var(--color-tertiary));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    font-family: var(--font-secondary);
+}
+
+.ranking-description {
+    font-size: 1.15rem;
+    color: var(--color-gray-700);
+    margin-bottom: 2.5rem;
+    line-height: 1.6;
+}
+
+.ranking-filters {
+    margin-bottom: 2.5rem;
+    display: flex;
+    justify-content: center;
+    gap: 1.2rem;
+}
+
+.ranking-filters .btn {
+    padding: 0.8rem 1.8rem;
+    font-size: 1rem;
+    border-radius: 25px; /* Zaokrąglone rogi dla przycisków */
+    box-shadow: var(--shadow-sm);
+}
+
+.ranking-filters .btn-secondary.active {
+    background: var(--color-primary);
+    color: white;
+    border-color: var(--color-primary);
+    box-shadow: var(--shadow-md);
+}
+
+.ranking-filters .btn-secondary.active:hover {
+    background: var(--color-tertiary);
+    border-color: var(--color-tertiary);
+}
+
+
+.ranking-table-container {
+    background: var(--color-bg-light);
+    border-radius: var(--border-radius-lg);
+    box-shadow: var(--shadow-xl);
+    border: 1px solid var(--color-gray-100);
+    overflow-x: auto; /* Scroll for smaller screens */
+    padding: 2rem; /* Wewnętrzny padding dla kontenera tabeli */
+}
+
+.ranking-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 0; /* Usunięcie marginesów, padding kontroluje kontener */
+}
+
+.ranking-table th, .ranking-table td {
+    padding: 1.2rem 1.5rem; /* Większy padding */
+    text-align: left;
+    border-bottom: 1px solid var(--color-gray-100);
+    color: var(--color-gray-700);
+    font-size: 1.05rem;
+}
+
+.ranking-table th {
+    background-color: var(--color-gray-50); /* Jasne tło dla nagłówków */
+    color: var(--color-gray-800);
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    font-size: 0.9rem;
+    position: sticky;
+    top: 0;
+    z-index: 1;
+}
+
+.ranking-table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+.ranking-table tbody tr:hover {
+    background-color: var(--color-gray-50);
+    transition: background-color 0.2s ease;
+}
+
+/* Styl dla wiersza obecnego użytkownika */
+.ranking-table .current-user-row {
+    background-color: #e6f7ff; /* Jasnoniebieskie tło */
+    font-weight: 600;
+    color: var(--color-primary);
+    border-left: 5px solid var(--color-primary); /* Pasek po lewej */
+}
+
+.ranking-table .current-user-row .username-text {
+    color: var(--color-primary); /* Upewnij się, że nazwa użytkownika jest koloru primary */
+}
+
+.ranking-table .current-user-row .you-label {
+    background-color: var(--color-primary);
+    color: white;
+    padding: 3px 8px;
+    border-radius: 6px;
+    font-size: 0.8em;
+    margin-left: 8px;
+    vertical-align: middle;
+}
+
+.ranking-position {
+    font-weight: 700;
+    color: var(--color-primary);
+}
+
+.ranking-score {
+    font-weight: 600;
+    color: var(--color-secondary);
+}
+
+.ranking-completed {
+    color: var(--color-gray-600);
+}
+
+/* Responsywność dla tabeli */
+@media (max-width: 768px) {
+    .ranking-section h1 {
+        font-size: 2.2rem;
+    }
+
+    .ranking-description {
+        font-size: 1rem;
+    }
+
+    .ranking-table-container {
+        padding: 1rem;
+    }
+
+    .ranking-table th, .ranking-table td {
+        padding: 0.8rem 1rem;
+        font-size: 0.95rem;
+    }
+
+    /* Stackowanie komórek tabeli na bardzo małych ekranach */
+    .ranking-table, .ranking-table tbody, .ranking-table tr, .ranking-table td {
+        display: block;
+        width: 100%;
+    }
+
+    .ranking-table thead {
+        display: none; /* Ukryj nagłówki, jeśli komórki są stackowane */
+    }
+
+    .ranking-table tr {
+        margin-bottom: 1rem;
+        border: 1px solid var(--color-gray-100);
+        border-radius: var(--border-radius);
+        overflow: hidden;
+    }
+
+    .ranking-table td {
+        text-align: right;
+        padding-left: 50%; /* Miejsce na etykietę */
+        position: relative;
+    }
+
+    .ranking-table td::before {
+        content: attr(data-label); /* Wyświetlaj etykietę z atrybutu data-label */
+        position: absolute;
+        left: 0;
+        width: 45%;
+        padding-left: 1rem;
+        font-weight: 600;
+        text-align: left;
+        color: var(--color-gray-800);
+        text-transform: uppercase;
+        font-size: 0.85rem;
+    }
+
+    /* Etykiety dla komórek tabeli */
+    .ranking-position::before { content: "Pozycja:"; }
+    .ranking-username::before { content: "Użytkownik:"; }
+    .ranking-score::before { content: "Wynik:"; }
+    .ranking-completed::before { content: "Ukończone:"; }
+
+    .ranking-table .current-user-row {
+        border-left: none; /* Wyłącz lewy pasek w widoku mobilnym */
+        border: 2px solid var(--color-primary); /* Podkreśl cały wiersz ramką */
+    }
+}
+
+@media (max-width: 480px) {
+    .ranking-section {
+        padding: 0 1rem;
+    }
+
+    .ranking-section h1 {
+        font-size: 1.8rem;
+    }
+
+    .ranking-description {
+        font-size: 0.95rem;
+    }
+
+    .ranking-filters {
+        flex-direction: column;
+        gap: 0.8rem;
+    }
+
+    .ranking-filters .btn {
+        width: 100%;
+    }
+
+    .ranking-table-container {
+        padding: 0.8rem;
+    }
+
+    .ranking-table td {
+        padding: 0.6rem 0.8rem;
+        font-size: 0.9rem;
+        padding-left: 45%;
+    }
+
+    .ranking-table td::before {
+        width: 40%;
+        padding-left: 0.8rem;
+        font-size: 0.8rem;
+    }
+}
