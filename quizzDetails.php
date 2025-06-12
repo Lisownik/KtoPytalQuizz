@@ -248,11 +248,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit_report'])) {
 	<div class="mobile-nav-overlay"></div>
 	<nav class="mobile-nav">
 		<ul>
-			<li><a href="index.php">Strona główna</a></li>
-			<li><a href="quizzCreator.php">Stwórz quiz</a></li>
-			<li><a href="explore.php">Odkryj</a></li>
-			<li><a href="profile.php">Profil</a></li>
-			<li><a href="history.php">Historia</a></li>
+            <li><a href="index.php">Strona główna</a></li>
+            <li><a id="selected-page" href="quizzCreator.php">Stwórz Quiz</a></li>
+            <li><a href="explore.php">Odkrywaj</a></li>
+            <li><a href="ranking.php">Ranking</a></li>
+            <?php if ($zalogowany): ?>
+                <li><a href="history.php">Historia</a></li>
+                <li><a href="profile.php">Profil</a></li>
+            <?php endif; ?>
 		</ul>
 		<div class="mobile-auth">
             <?php if ($zalogowany): ?>
@@ -274,13 +277,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit_report'])) {
 		</a>
 	</div>
 	<nav>
-		<ul>
-			<li><a href="index.php">Strona główna</a></li>
-			<li><a href="quizzCreator.php">Stwórz quiz</a></li>
-			<li><a href="explore.php">Odkryj</a></li>
-			<li><a href="profile.php">Profil</a></li>
-			<li><a href="history.php">Historia</a></li>
-		</ul>
+        <li><a href="index.php">Strona główna</a></li>
+        <li><a id="selected-page" href="quizzCreator.php">Stwórz Quiz</a></li>
+        <li><a href="explore.php">Odkrywaj</a></li>
+        <li><a href="ranking.php">Ranking</a></li>
+        <?php if ($zalogowany): ?>
+            <li><a href="history.php">Historia</a></li>
+            <li><a href="profile.php">Profil</a></li>
+        <?php endif; ?>
 	</nav>
 	<div class="header-auth">
         <?php if ($zalogowany): ?>

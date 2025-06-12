@@ -131,62 +131,64 @@ mysqli_close($db); // Zamykamy połączenie z bazą danych
 	</div>
 </div>
 
+<header>
+    <div>
+        <a href="index.php">
+            <img src="assets/logo.png" alt="logo mózgu">
+            <h2>Kto Pytał</h2>
+        </a>
+    </div>
+    <nav>
+        <ul>
+            <li><a id="selected-page" href="index.php">Strona główna</a></li>
+            <li><a href="quizzCreator.php">Stwórz Quiz</a></li>
+            <li><a href="explore.php">Odkrywaj</a></li>
+            <li><a href="ranking.php">Ranking</a></li>
+            <?php if ($zalogowany): ?>
+                <li><a href="history.php">Historia</a></li>
+                <li><a href="profile.php">Profil</a></li>
+            <?php endif; ?>
+        </ul>
+    </nav>
+    <div class="header-auth">
+        <?php if ($zalogowany): ?>
+            <form method="post" action="php/logout.php" class="logout-form">
+                <button type="submit" class="logout-btn">Wyloguj się</button>
+            </form>
+        <?php else: ?>
+            <a href="#" id="open-login" class="signin-link">Zaloguj się</a>
+        <?php endif; ?>
+    </div>
+</header>
 <div class="hamburger">
-	<input type="checkbox" id="mobile-menu-toggle">
-	<label for="mobile-menu-toggle" class="hamburger-btn">
+    <input type="checkbox" id="mobile-menu-toggle">
+    <label for="mobile-menu-toggle" class="hamburger-btn">
 		<span></span>
 		<span></span>
 		<span></span>
 	</label>
-	<div class="mobile-nav-overlay"></div>
-	<nav class="mobile-nav">
-		<ul>
-			<li><a href="index.php">Start</a></li>
-			<li><a href="quizzCreator.php">Stwórz Quiz</a></li>
-			<li><a href="explore.php">Znajdź Quiz</a></li>
-			<li><a id="selected-page" href="history.php">Moje quizy</a></li>
+    <div class="mobile-nav-overlay"></div>
+    <nav class="mobile-nav">
+        <ul>
+            <li><a id="selected-page" href="index.php">Strona główna</a></li>
+            <li><a href="quizzCreator.php">Stwórz Quiz</a></li>
+            <li><a href="explore.php">Odkrywaj</a></li>
+            <li><a href="ranking.php">Ranking</a></li>
             <?php if ($zalogowany): ?>
-				<li><a href="profile.php">Mój profil</a></li>
+                <li><a href="history.php">Historia</a></li>
+                <li><a href="profile.php">Profil</a></li>
             <?php endif; ?>
 		</ul>
         <?php if ($zalogowany): ?>
-			<div class="mobile-auth">
-				<form method="post" action="php/logout.php">
-					<button type="submit">Wyloguj się</button>
-				</form>
-			</div>
+            <div class="mobile-auth">
+                <form method="post" action="php/logout.php">
+                    <button type="submit">Wyloguj się</button>
+                </form>
+            </div>
         <?php endif; ?>
-	</nav>
+    </nav>
 </div>
 
-<header>
-	<div>
-		<a href="index.php">
-			<img src="assets/logo.png" alt="logo mózgu">
-			<h2>Kto Pytał</h2>
-		</a>
-	</div>
-	<nav>
-		<ul>
-			<li><a href="index.php">Start</a></li>
-			<li><a href="quizzCreator.php">Stwórz Quiz</a></li>
-			<li><a href="explore.php">Znajdź Quiz</a></li>
-			<li><a id="selected-page" href="history.php">Moje quizy</a></li>
-            <?php if ($zalogowany): ?>
-				<li><a href="profile.php">Mój profil</a></li>
-            <?php endif; ?>
-		</ul>
-	</nav>
-	<div class="header-auth">
-        <?php if ($zalogowany): ?>
-			<form method="post" action="php/logout.php" class="logout-form">
-				<button type="submit" class="logout-btn">Wyloguj się</button>
-			</form>
-        <?php else: ?>
-			<a href="#" id="open-login" class="signin-link">Zaloguj się</a>
-        <?php endif; ?>
-	</div>
-</header>
 
 <main class="historia-container">
 	<div class="historia-header">
