@@ -87,6 +87,81 @@ nav a:hover {
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
 
+/* Quiz Card Styling */
+.quiz-card {
+    background: white;
+    border-radius: 12px;
+    padding: 20px; /* Adjusted padding for better spacing */
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); /* Softer shadow for depth */
+    transition: transform 0.3s ease, box-shadow 0.3s ease; /* Smooth transitions */
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between; /* Distribute space in card */
+    min-height: 220px; /* Ensure consistent card height */
+    margin: 10px; /* Space between cards */
+}
+
+/* Hover Effect for Quiz Card */
+.quiz-card:hover {
+    transform: translateY(-5px); /* Lift effect on hover */
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15); /* More pronounced shadow on hover */
+}
+
+/* Quiz Card Header */
+.quiz-card__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px; /* Adjusted margin */
+}
+
+/* Quiz Card Title */
+.quiz-card__title {
+    color: var(--color-tertiary); /* Use tertiary for titles */
+    font-size: 1.5em; /* Slightly larger title font */
+    font-weight: 700; /* Bolder title */
+}
+
+/* Quiz Card Description */
+.quiz-card__description {
+    color: var(--color-gray-600); /* Softer gray for description */
+    font-size: 1em; /* Adjusted font size */
+    line-height: 1.5; /* Improved line height for readability */
+    margin-bottom: 20px; /* Space before footer */
+}
+
+/* Quiz Card Button */
+.quiz-card__button {
+    background: var(--color-secondary);
+    color: white;
+    border: none;
+    padding: 10px 20px; /* Increased padding */
+    border-radius: var(--border-radius);
+    text-decoration: none; /* Remove underline */
+    font-weight: 600;
+    transition: background 0.3s ease, transform 0.2s ease;
+    box-shadow: var(--shadow-sm); /* Subtle shadow for button */
+    align-self: flex-start; /* Align button to the start */
+}
+
+.quiz-card__button:hover {
+    background: var(--color-accent); /* Accent color on hover */
+    transform: translateY(-2px); /* Slight lift for button */
+    box-shadow: var(--shadow-md); /* More pronounced shadow */
+}
+
+/* Container for Quizzes */
+.quizzes_container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); /* Responsive grid */
+    gap: 20px; /* Space between cards */
+    padding: 20px; /* Padding inside the container */
+    background: var(--color-bg-light); /* Light background for the container */
+    border-radius: var(--border-radius-lg); /* Rounded corners for the container */
+    box-shadow: var(--shadow-md); /* Medium shadow for container */
+}
+
+
 nav a::before {
     content: '';
     position: absolute;

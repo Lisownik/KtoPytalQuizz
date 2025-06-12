@@ -1,6 +1,22 @@
 <?php
 session_start();
 $zalogowany = isset($_SESSION['zalogowany']) ? $_SESSION['zalogowany'] : false;
+require_once("config/db.php");
+?>
+
+<?php
+
+if ($db->connect_error) {
+    die("Connection failed: " . $db->connect_error);
+}
+// Query to get the three most popular quizzes
+$sql = "SELECT q.quiz_id, q.nazwa, q.opis, COUNT(pq.polubienie_id) AS likes_count
+        FROM quiz q
+        LEFT JOIN polubione_quizy pq ON q.quiz_id = pq.quiz_id
+        GROUP BY q.quiz_id
+        ORDER BY likes_count DESC
+        LIMIT 3";
+$result = $db->query($sql);
 ?>
 <!DOCTYPE html>
 <html lang="pl">
@@ -153,10 +169,30 @@ $zalogowany = isset($_SESSION['zalogowany']) ? $_SESSION['zalogowany'] : false;
         </div>
         <img src="assets/Szescian.png" alt="Sześcian z quizem">
     </section>
-    <section id="second">
-        <h3>Popularne dzisiaj</h3>
-        <article></article>
-    </section>
+	<section id="second">
+		<h3>Popularne dzisiaj</h3>
+		<div class="quizzes_container">
+            <?php if ($result->num_rows > 0): ?>
+                <?php while($row = $result->fetch_assoc()): ?>
+					<div class="quiz-card">
+						<div class="quiz-card__header">
+							<h4 class="quiz-card__title"><?php echo htmlspecialchars($row['nazwa']); ?></h4>
+							<span class="quiz-card__questions"><?php echo $row['likes_count']; ?> polubień</span>
+						</div>
+						<p class="quiz-card__description"><?php echo htmlspecialchars($row['opis']); ?></p>
+						<div class="quiz-card__footer">
+							<a href="quiz.php?id=<?php echo $row['quiz_id']; ?>" class="quiz-card__button">Rozwiąż Quiz</a>
+						</div>
+					</div>
+                <?php endwhile; ?>
+            <?php else: ?>
+				<div class="no-quizzes-found">
+					<h3>Brak popularnych quizów</h3>
+					<p>Obecnie nie ma żadnych popularnych quizów do wyświetlenia.</p>
+				</div>
+            <?php endif; ?>
+		</div>
+	</section>
 </main>
 
 <footer>
