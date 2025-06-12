@@ -8,23 +8,20 @@ $user_id = $_SESSION['user_id'] ?? null; // Get user ID from session if logged i
 
 // Check for database connection error
 if (mysqli_connect_errno()) {
-    // Optionally, set an error message and redirect if connection fails
     $_SESSION['error'] = 'Nie udało się połączyć z bazą danych: ' . mysqli_connect_error();
-    header('Location: index.php'); // Redirect to a suitable error page or home
+    header('Location: index.php');
     exit();
 }
 
 $quiz_id = null;
-$quiz = null; // Initialize quiz variable
-$user_liked_quiz = false; // Initialize state for user's like
-$total_likes = 0; // Initialize total likes count
+$quiz = null;
+$user_liked_quiz = false;
+$total_likes = 0;
 
 if (isset($_GET['id']) && is_numeric($_GET['id'])) {
     $quiz_id = (int)$_GET['id'];
 
     // Fetch quiz details
-    // Table 'quiz' has 'nazwa' for title and 'opis' for description.
-    // Table 'uzytkownicy' has 'Nazwa' for username.
     $stmt = $db->prepare("SELECT q.nazwa AS tytul, q.opis, u.Nazwa AS autor_nazwa FROM quiz q JOIN uzytkownicy u ON q.user_id = u.user_id WHERE q.quiz_id = ?");
     if ($stmt) {
         $stmt->bind_param("i", $quiz_id);
@@ -34,9 +31,9 @@ if (isset($_GET['id']) && is_numeric($_GET['id'])) {
         $stmt->close();
     }
 
-    // Fetch number of questions from the 'pytanie' table
+    // Fetch number of questions
     $num_questions = 0;
-    if ($quiz) { // Only proceed if quiz details were found
+    if ($quiz) {
         $stmt_questions = $db->prepare("SELECT COUNT(*) AS total_questions FROM pytanie WHERE quiz_id = ?");
         if ($stmt_questions) {
             $stmt_questions->bind_param("i", $quiz_id);
@@ -47,7 +44,7 @@ if (isset($_GET['id']) && is_numeric($_GET['id'])) {
             $stmt_questions->close();
         }
 
-        // Fetch comments for the quiz
+        // Fetch comments
         $comments = [];
         $stmt_comments = $db->prepare("SELECT k.treść, k.data_utworzenia, u.Nazwa AS user_nazwa FROM komentarze k JOIN uzytkownicy u ON k.user_id = u.user_id WHERE k.quiz_id = ? ORDER BY k.data_utworzenia DESC");
         if ($stmt_comments) {
@@ -73,7 +70,7 @@ if (isset($_GET['id']) && is_numeric($_GET['id'])) {
             }
         }
 
-        // Get total likes for this quiz
+        // Get total likes
         $stmt_total_likes = $db->prepare("SELECT COUNT(*) FROM polubione_quizy WHERE quiz_id = ?");
         if ($stmt_total_likes) {
             $stmt_total_likes->bind_param("i", $quiz_id);
@@ -83,23 +80,21 @@ if (isset($_GET['id']) && is_numeric($_GET['id'])) {
             $total_likes = $count;
             $stmt_total_likes->close();
         }
-
     }
 
     // Calculate estimated time (1.5 minutes per question)
     $estimated_minutes = $num_questions * 1.5;
 
 } else {
-    // Redirect or display an error if no valid quiz ID is provided
     $_SESSION['error'] = 'Nieprawidłowy identyfikator quizu.';
-    header('Location: explore.php'); // Or a generic error page
+    header('Location: explore.php');
     exit();
 }
 
 // If quiz not found, redirect
 if (!$quiz) {
     $_SESSION['error'] = 'Quiz o podanym ID nie istnieje.';
-    header('Location: explore.php'); // Or a generic error page
+    header('Location: explore.php');
     exit();
 }
 
@@ -107,7 +102,7 @@ if (!$quiz) {
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit_comment'])) {
     if (!$zalogowany) {
         $_SESSION['error'] = 'Musisz być zalogowany, aby dodać komentarz.';
-        header('Location: login.php'); // Redirect to login page
+        header('Location: login.php');
         exit();
     }
 
@@ -116,12 +111,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit_comment'])) {
     if (empty($comment_text)) {
         $_SESSION['error'] = 'Treść komentarza nie może być pusta.';
     } else {
-        $stmt_insert_comment = $db->prepare("INSERT INTO komentarze (quiz_id, user_id, treść, data_utworzenia) VALUES (?, ?, ?, NOW())");
+        $stmt_insert_comment = $db->prepare("INSERT INTO komentarze (treść, data_utworzenia, user_id, quiz_id) VALUES (?, NOW(), ?, ?)");
         if ($stmt_insert_comment) {
-            $stmt_insert_comment->bind_param("iis", $quiz_id, $user_id, $comment_text);
+            $stmt_insert_comment->bind_param("sii", $comment_text, $user_id, $quiz_id);
             if ($stmt_insert_comment->execute()) {
                 $_SESSION['success'] = 'Komentarz został dodany.';
-                // Redirect to prevent form re-submission and clear POST data
                 header('Location: quizzDetails.php?id=' . $quiz_id);
                 exit();
             } else {
@@ -132,7 +126,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit_comment'])) {
             $_SESSION['error'] = 'Wystąpił błąd podczas przygotowywania zapytania: ' . $db->error;
         }
     }
-    // If there was an error, redirect back to the page to display the error message
     header('Location: quizzDetails.php?id=' . $quiz_id);
     exit();
 }
@@ -146,7 +139,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['toggle_like'])) {
     }
 
     if ($user_liked_quiz) {
-        // Unlike the quiz
         $stmt_unlike = $db->prepare("DELETE FROM polubione_quizy WHERE user_id = ? AND quiz_id = ?");
         if ($stmt_unlike) {
             $stmt_unlike->bind_param("ii", $user_id, $quiz_id);
@@ -160,15 +152,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['toggle_like'])) {
             $_SESSION['error'] = 'Błąd przygotowania zapytania (usuwanie polubienia): ' . $db->error;
         }
     } else {
-        // Like the quiz
         $stmt_like = $db->prepare("INSERT INTO polubione_quizy (user_id, quiz_id) VALUES (?, ?)");
         if ($stmt_like) {
             $stmt_like->bind_param("ii", $user_id, $quiz_id);
             if ($stmt_like->execute()) {
                 $_SESSION['success'] = 'Quiz został polubiony!';
             } else {
-                // Check if the error is due to duplicate entry (user already liked it)
-                if ($db->errno == 1062) { // MySQL error code for duplicate entry for unique key
+                if ($db->errno == 1062) {
                     $_SESSION['error'] = 'Już polubiłeś ten quiz.';
                 } else {
                     $_SESSION['error'] = 'Błąd podczas polubienia quizu: ' . $stmt_like->error;
@@ -183,6 +173,36 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['toggle_like'])) {
     exit();
 }
 
+// ----------- ZGŁOSZENIE (REPORT) SYSTEM DOPASOWANY DO BAZY --------------
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit_report'])) {
+    if (!$zalogowany) {
+        $_SESSION['error'] = 'Musisz być zalogowany, aby zgłosić quiz.';
+        header('Location: login.php');
+        exit();
+    }
+
+    $report_text = trim($_POST['report_text'] ?? '');
+
+    if (empty($report_text)) {
+        $_SESSION['error'] = 'Treść zgłoszenia nie może być pusta.';
+    } else {
+        // ZGODNIE Z TWOJĄ BAZĄ: tabela "zgłoszenie", kolumny "Treść", "data_utworzenia", "user_id", "quiz_id"
+        $stmt_insert_report = $db->prepare("INSERT INTO `zgłoszenie` (`Treść`, `data_utworzenia`, `user_id`, `quiz_id`) VALUES (?, NOW(), ?, ?)");
+        if ($stmt_insert_report) {
+            $stmt_insert_report->bind_param("sii", $report_text, $user_id, $quiz_id);
+            if ($stmt_insert_report->execute()) {
+                $_SESSION['success'] = 'Zgłoszenie zostało wysłane.';
+            } else {
+                $_SESSION['error'] = 'Wystąpił błąd podczas wysyłania zgłoszenia: ' . $stmt_insert_report->error;
+            }
+            $stmt_insert_report->close();
+        } else {
+            $_SESSION['error'] = 'Wystąpił błąd podczas przygotowywania zapytania: ' . $db->error;
+        }
+    }
+    header('Location: quizzDetails.php?id=' . $quiz_id);
+    exit();
+}
 ?>
 <!DOCTYPE html>
 <html lang="pl">
@@ -200,6 +220,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['toggle_like'])) {
 	<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<title>Szczegóły Quizu - Kto Pytał</title>
+	<style>
+        .report-modal { display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,.5); backdrop-filter: blur(2px); justify-content:center; align-items: center; z-index: 9000;}
+        .report-modal-content { background: #fff; border-radius: 16px; max-width:400px; width:90%; padding:32px 20px 24px 20px; box-shadow:0 10px 32px rgba(0,0,0,0.16);}
+        .report-modal-content h2 { font-size: 1.3rem; margin-bottom: 12px; color:#d32f2f;}
+        .report-modal-content textarea { width:100%; min-height:100px; border-radius:8px; padding:10px; border:1px solid #eee; margin-bottom:20px; resize:vertical; font-family:inherit;}
+        .report-modal-content .btn-container { display:flex;gap:16px;justify-content:flex-end;}
+        .close-report-btn { background:#eee; color:#222; border:none; padding:8px 22px; border-radius:8px; cursor:pointer;}
+        .close-report-btn:hover {background: #ddd;}
+        .submit-report-btn { background: #d32f2f; color:#fff; border:none; padding:8px 22px; border-radius:8px; cursor:pointer;}
+        .submit-report-btn:hover {background: #b71c1c;}
+        .report-link {display: flex;align-items: center;gap:6px;color:#d32f2f;text-decoration:none;font-weight:500;transition:all 0.2s;position:absolute; right:1rem; top:1rem;}
+        .report-link:hover {color: #b71c1c; transform:translateY(-2px);}
+        .report-link svg {width:21px; height:21px;}
+        @media(max-width: 640px) { .report-modal-content {max-width:96vw;} }
+	</style>
 </head>
 <body>
 
@@ -220,7 +255,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['toggle_like'])) {
 			<li><a href="history.php">Historia</a></li>
 		</ul>
 		<div class="mobile-auth">
-            <?php if ($zalogowany): /* Check if user is logged in*/ ?>
+            <?php if ($zalogowany): ?>
 				<form method="post" action="php/logout.php">
 					<button type="submit">Wyloguj</button>
 				</form>
@@ -248,7 +283,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['toggle_like'])) {
 		</ul>
 	</nav>
 	<div class="header-auth">
-        <?php if ($zalogowany): /* Check if user is logged in*/ ?>
+        <?php if ($zalogowany): ?>
 			<form method="post" action="php/logout.php" class="logout-form">
 				<button type="submit" class="logout-btn">Wyloguj</button>
 			</form>
@@ -274,24 +309,33 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['toggle_like'])) {
 
 		<div class="quiz-info-card">
 			<div class="quiz-header">
-				<h1 class="quiz-title"><?php echo htmlspecialchars($quiz['tytul']); /* Display quiz title*/ ?></h1>
+				<h1 class="quiz-title"><?php echo htmlspecialchars($quiz['tytul']); ?></h1>
 				<div class="quiz-meta">
-					<span class="quiz-author">Autor: <?php echo htmlspecialchars($quiz['autor_nazwa']); /* Display quiz author*/ ?></span>
+					<span class="quiz-author">Autor: <?php echo htmlspecialchars($quiz['autor_nazwa']); ?></span>
 				</div>
 			</div>
-
+            <?php if ($zalogowany): ?>
+				<a href="#" class="report-link" id="open-report-modal" title="Zgłoś quiz">
+					<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+						<path d="M18 8V5a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v3"/>
+						<path d="M2 12h20"/>
+						<path d="M18 16v5a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2v-5"/>
+						<circle cx="12" cy="16" r="2"/>
+					</svg>
+					Zgłoś Quiz
+				</a>
+            <?php endif; ?>
 			<div class="quiz-description">
 				<h2>O tym quizie</h2>
-				<p><?php echo nl2br(htmlspecialchars($quiz['opis'])); /* Display quiz description*/ ?></p>
+				<p><?php echo nl2br(htmlspecialchars($quiz['opis'])); ?></p>
 			</div>
-
 			<div class="quiz-stats">
 				<div class="stat-item">
-					<span class="stat-number"><?php echo $num_questions; /* Display number of questions*/ ?></span>
+					<span class="stat-number"><?php echo $num_questions; ?></span>
 					<span class="stat-label">Pytania</span>
 				</div>
 				<div class="stat-item">
-					<span class="stat-number"><?php echo $estimated_minutes; /* Display estimated minutes*/ ?></span>
+					<span class="stat-number"><?php echo $estimated_minutes; ?></span>
 					<span class="stat-label">Minuty</span>
 				</div>
 				<div class="stat-item like-section">
@@ -310,7 +354,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['toggle_like'])) {
 
 		<div class="quiz-actions">
 			<div class="action-buttons">
-				<a href="quizzQuestions.php?id=<?php echo $quiz_id; /* Pass quiz ID to quiz.php*/ ?>" class="btn btn-primary btn-large">
+				<a href="quizzQuestions.php?id=<?php echo $quiz_id; ?>" class="btn btn-primary btn-large">
 					<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
 						<polygon points="5,3 19,12 5,21"/>
 					</svg>
@@ -328,9 +372,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['toggle_like'])) {
 		</div>
 
 		<div class="comments-section">
-			<h2>💬 Komentarze</h2>
+			<h2>Komentarze</h2>
 
-            <?php if ($zalogowany): /* Check if user is logged in to allow commenting*/ ?>
+            <?php if ($zalogowany): ?>
 				<form action="quizzDetails.php?id=<?php echo $quiz_id; ?>" method="POST" class="comment-form">
 					<textarea name="comment_text" placeholder="Podziel się swoimi przemyśleniami o tym quizie..." required></textarea>
 					<button type="submit" name="submit_comment">
@@ -348,7 +392,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['toggle_like'])) {
             <?php endif; ?>
 
 			<div class="comment-list">
-                <?php if (!empty($comments)): /* Display comments if any exist*/ ?>
+                <?php if (!empty($comments)): ?>
                     <?php foreach ($comments as $comment): ?>
 						<div class="comment-item">
 							<div class="comment-header">
@@ -369,6 +413,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['toggle_like'])) {
 
 	</div>
 </main>
+
+<?php if ($zalogowany): ?>
+	<!-- Report Modal -->
+	<div class="report-modal" id="report-modal">
+		<div class="report-modal-content">
+			<h2>Zgłoś Quiz</h2>
+			<form action="quizzDetails.php?id=<?php echo $quiz_id; ?>" method="POST">
+				<textarea name="report_text" placeholder="Opisz, dlaczego zgłaszasz ten quiz..." required></textarea>
+				<div class="btn-container">
+					<button type="button" class="close-report-btn" id="close-report-modal">Anuluj</button>
+					<button type="submit" name="submit_report" class="submit-report-btn">Wyślij Zgłoszenie</button>
+				</div>
+			</form>
+		</div>
+	</div>
+<?php endif; ?>
 
 <footer>
 	<div class="footer-content">
@@ -412,13 +472,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['toggle_like'])) {
 <script src="js/mobile-menu.js"></script>
 <script>
     document.addEventListener('DOMContentLoaded', function() {
-        // Add smooth animations
+        // Animacje (przeniesione bez zmian)
         const cards = document.querySelectorAll('.quiz-info-card, .quiz-actions, .comments-section');
-
         cards.forEach((card, index) => {
             card.style.opacity = '0';
             card.style.transform = 'translateY(30px)';
-
             setTimeout(() => {
                 card.style.transition = 'all 0.6s ease';
                 card.style.opacity = '1';
@@ -426,13 +484,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['toggle_like'])) {
             }, index * 200);
         });
 
-        // Button hover effects
+        // Hover effects for buttons
         const buttons = document.querySelectorAll('.btn');
         buttons.forEach(button => {
             button.addEventListener('mouseenter', function() {
                 this.style.transform = 'translateY(-2px) scale(1.02)';
             });
-
             button.addEventListener('mouseleave', function() {
                 this.style.transform = 'translateY(0) scale(1)';
             });
@@ -442,15 +499,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['toggle_like'])) {
         const commentForm = document.querySelector('.comment-form');
         if (commentForm) {
             const textarea = commentForm.querySelector('textarea');
-            const submitBtn = commentForm.querySelector('button[type="submit"]');
-
-            // Auto-resize textarea
             textarea.addEventListener('input', function() {
                 this.style.height = 'auto';
                 this.style.height = this.scrollHeight + 'px';
             });
-
-            // Character counter (optional)
             textarea.addEventListener('input', function() {
                 const remaining = 500 - this.value.length;
                 if (remaining < 50) {
@@ -465,7 +517,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['toggle_like'])) {
         const likeButton = document.querySelector('.like-button');
         if (likeButton && !likeButton.disabled) {
             likeButton.addEventListener('click', function(e) {
-                // Add a little animation on click
                 this.style.transform = 'scale(0.95)';
                 setTimeout(() => {
                     this.style.transform = 'scale(1)';
@@ -478,17 +529,36 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['toggle_like'])) {
         if (openLoginComment) {
             openLoginComment.addEventListener('click', function(event) {
                 event.preventDefault();
-                // Assuming you have a modal or redirect for login
-                window.location.href = 'login.php'; // Redirect to your login page
+                window.location.href = 'login.php';
+            });
+        }
+
+        // Report Modal
+        const openReportModalBtn = document.getElementById('open-report-modal');
+        const closeReportModalBtn = document.getElementById('close-report-modal');
+        const reportModal = document.getElementById('report-modal');
+
+        if (openReportModalBtn && reportModal) {
+            openReportModalBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+                reportModal.style.display = 'flex';
+            });
+        }
+        if (closeReportModalBtn && reportModal) {
+            closeReportModalBtn.addEventListener('click', function() {
+                reportModal.style.display = 'none';
+            });
+        }
+        if (reportModal) {
+            reportModal.addEventListener('click', function(e) {
+                if (e.target === reportModal) {
+                    reportModal.style.display = 'none';
+                }
             });
         }
 
         // Animate comments on scroll
-        const observerOptions = {
-            threshold: 0.1,
-            rootMargin: '0px 0px -50px 0px'
-        };
-
+        const observerOptions = { threshold: 0.1, rootMargin: '0px 0px -50px 0px' };
         const commentObserver = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
                 if (entry.isIntersecting) {

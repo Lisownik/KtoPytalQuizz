@@ -17,8 +17,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['username'], $_POST['p
     $nazwa_uzytkownika = sanitizuj_dane($_POST['username']);
     $haslo = $_POST['password'];
 
-    $zapytanie = "SELECT user_id, hasło FROM uzytkownicy WHERE nazwa = '$nazwa_uzytkownika'";
-    $wynik = mysqli_query($db, $zapytanie);
+    // Zmienione zapytanie, aby pobrać również rolę
+    $zapytanie = "SELECT user_id, hasło, rola FROM uzytkownicy WHERE nazwa = ?";
+    $stmt = mysqli_prepare($db, $zapytanie);
+    mysqli_stmt_bind_param($stmt, "s", $nazwa_uzytkownika);
+    mysqli_stmt_execute($stmt);
+    $wynik = mysqli_stmt_get_result($stmt);
+
 
     if ($wynik && mysqli_num_rows($wynik) > 0) {
         $uzytkownik = mysqli_fetch_assoc($wynik);
@@ -27,6 +32,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['username'], $_POST['p
         if (password_verify($haslo, $haslo_hash)) {
             $_SESSION['zalogowany'] = true;
             $_SESSION['username'] = $nazwa_uzytkownika;
+            $_SESSION['user_id'] = $uzytkownik['user_id']; // Upewnij się, że user_id jest również zapisywane
+            $_SESSION['user_role'] = $uzytkownik['rola']; // Zapisz rolę użytkownika w sesji
 
             header('Location: ../profile.php');
             exit;
@@ -40,6 +47,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['username'], $_POST['p
         header('Location: ../index.php'); // Redirect back to index.php
         exit();
     }
+} else {
+    // Jeśli ktoś próbuje uzyskać dostęp bezpośrednio lub bez wymaganych danych POST
+    header('Location: ../index.php');
+    exit();
 }
-// Remove the closing brace that was incorrectly placed here
 ?>
