@@ -117,6 +117,71 @@ main {
     margin-top: 0;
 }
 
+/* Toast Notification Styles */
+#toast-container {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 10000;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.toast {
+    background: white;
+    border-radius: 4px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    padding: 15px 20px;
+    min-width: 250px;
+    max-width: 300px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    opacity: 0;
+    transform: translateX(100%);
+    transition: opacity 0.3s, transform 0.3s;
+}
+
+.toast.show {
+    opacity: 1;
+    transform: translateX(0);
+}
+
+.toast.hide {
+    opacity: 0;
+    transform: translateX(100%);
+}
+
+.toast-message {
+    flex: 1;
+}
+
+.toast-close-btn {
+    background: none;
+    border: none;
+    font-size: 18px;
+    cursor: pointer;
+    color: #888;
+    margin-left: 15px;
+}
+
+.toast-close-btn:hover {
+    color: #555;
+}
+
+.toast.error {
+    border-left: 4px solid #e74c3c;
+}
+
+.toast.success {
+    border-left: 4px solid #2ecc71;
+}
+
+.toast.info {
+    border-left: 4px solid #3498db;
+}
+
 #first {
     display: flex;
     align-items: center;

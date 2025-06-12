@@ -1,23 +1,46 @@
 <?php
 session_start();
 $zalogowany = isset($_SESSION['zalogowany']) ? $_SESSION['zalogowany'] : false;
-
-// Symulacja danych rankingowych
-// W rzeczywistości te dane pochodziłyby z bazy danych
-$ranking_data = [
-    ['position' => 1, 'username' => 'ProPlayer77', 'score' => 1500, 'quizzes_completed' => 120],
-    ['position' => 2, 'username' => 'QuizMasterBen', 'score' => 1450, 'quizzes_completed' => 115],
-    ['position' => 3, 'username' => 'SmartLearner', 'score' => 1380, 'quizzes_completed' => 100],
-    ['position' => 4, 'username' => 'CodeWhiz', 'score' => 1320, 'quizzes_completed' => 95],
-    ['position' => 5, 'username' => 'BrainyBee', 'score' => 1280, 'quizzes_completed' => 90],
-    ['position' => 6, 'username' => 'KnowledgeKing', 'score' => 1200, 'quizzes_completed' => 85],
-    ['position' => 7, 'username' => 'QuizzyRider', 'score' => 1150, 'quizzes_completed' => 80],
-    ['position' => 8, 'username' => 'FactFinder', 'score' => 1080, 'quizzes_completed' => 75],
-    ['position' => 9, 'username' => 'MindBender', 'score' => 1020, 'quizzes_completed' => 70],
-    ['position' => 10, 'username' => 'TriviaGuru', 'score' => 950, 'quizzes_completed' => 65],
-];
-
+require_once("config/db.php");
+// Sprawdzenie połączenia
+if ($db->connect_error) {
+    die("Połączenie nieudane: " . $db->connect_error);
+}
+// Zapytanie SQL do pobrania danych z tabeli wyniki_quizow oraz uzytkownicy
+$sql = "
+    SELECT 
+        u.Nazwa AS username, 
+        SUM(w.wynik_liczbowy) AS score, 
+        COUNT(w.quiz_id) AS quizzes_completed 
+    FROM 
+        wyniki_quizow w 
+    JOIN 
+        uzytkownicy u ON w.user_id = u.user_id 
+    GROUP BY 
+        u.user_id 
+    ORDER BY 
+        score DESC
+";
+$result = $db->query($sql);
+// Przygotowanie danych rankingowych
+$ranking_data = [];
+if ($result->num_rows > 0) {
+    $position = 1;
+    while ($row = $result->fetch_assoc()) {
+        $ranking_data[] = [
+            'position' => $position++,
+            'username' => $row['username'],
+            'score' => $row['score'],
+            'quizzes_completed' => $row['quizzes_completed']
+        ];
+    }
+} else {
+    $ranking_data = [];
+}
+// Zamknięcie połączenia
+$db->close();
 ?>
+
 <!DOCTYPE html>
 <html lang="pl">
 <head>
