@@ -4,14 +4,7 @@ require_once("config/db.php");
 
 $zalogowany = isset($_SESSION['zalogowany']) ? $_SESSION['zalogowany'] : false;
 
-// Sprawdź, czy użytkownik jest zalogowany
-//if (!isset($_SESSION['zalogowany']) || $_SESSION['zalogowany'] !== true) {
-//    $_SESSION['error'] = 'Musisz być zalogowany, aby uzyskać dostęp do tej strony.';
-//    header('Location: index.php');
-//    exit();
-//}
-
-// Sprawdź, czy użytkownik ma rolę 'admin' - POPRAWIONA LOGIKA
+// Sprawdź, czy użytkownik ma rolę 'admin'
 if (!isset($_SESSION['user_role']) || $_SESSION['user_role'] !== 'admin') {
     $_SESSION['error'] = 'Nie masz uprawnień do przeglądania tej strony.';
     header('Location: index.php');
@@ -73,7 +66,7 @@ if (isset($_GET['delete_quiz']) && is_numeric($_GET['delete_quiz'])) {
         $db->rollback();
         $_SESSION['error'] = 'Błąd podczas usuwania quizu: ' . $exception->getMessage();
     }
-    header('Location: admin.php'); // POPRAWIONE - admin.php zamiast admin_panel.php
+    header('Location: admin.php');
     exit();
 }
 
@@ -84,7 +77,7 @@ if (isset($_GET['delete_user']) && is_numeric($_GET['delete_user'])) {
     // Upewnij się, że admin nie usuwa samego siebie
     if ($user_id_to_delete == $_SESSION['user_id']) {
         $_SESSION['error'] = 'Nie możesz usunąć własnego konta administratora.';
-        header('Location: admin.php'); // POPRAWIONE
+        header('Location: admin.php');
         exit();
     }
 
@@ -108,7 +101,7 @@ if (isset($_GET['delete_user']) && is_numeric($_GET['delete_user'])) {
         $stmt->execute();
         $stmt->close();
 
-        // Usuń zgłoszenia użytkownika
+        // Usuń zgłoszenia użytkownika (jeśli zgłaszał coś)
         $stmt = $db->prepare("DELETE FROM zgłoszenie WHERE user_id = ?");
         $stmt->bind_param("i", $user_id_to_delete);
         $stmt->execute();
@@ -157,9 +150,30 @@ if (isset($_GET['delete_user']) && is_numeric($_GET['delete_user'])) {
         $db->rollback();
         $_SESSION['error'] = 'Błąd podczas usuwania użytkownika: ' . $exception->getMessage();
     }
-    header('Location: admin.php'); // POPRAWIONE
+    header('Location: admin.php');
     exit();
 }
+
+// Obsługa usuwania pojedynczego zgłoszenia
+if (isset($_GET['delete_report']) && is_numeric($_GET['delete_report'])) {
+    $report_id_to_delete = (int)$_GET['delete_report'];
+
+    $stmt = $db->prepare("DELETE FROM zgłoszenie WHERE zgłoszenie_id = ?");
+    if ($stmt) {
+        $stmt->bind_param("i", $report_id_to_delete);
+        if ($stmt->execute()) {
+            $_SESSION['success'] = 'Zgłoszenie zostało pomyślnie usunięte.';
+        } else {
+            $_SESSION['error'] = 'Błąd podczas usuwania zgłoszenia: ' . $stmt->error;
+        }
+        $stmt->close();
+    } else {
+        $_SESSION['error'] = 'Błąd przygotowania zapytania do usunięcia zgłoszenia: ' . $db->error;
+    }
+    header('Location: admin.php');
+    exit();
+}
+
 
 // Pobierz wszystkie quizy
 $quizzes = [];
@@ -188,6 +202,21 @@ if ($stmt) {
 } else {
     $_SESSION['error'] = 'Błąd podczas pobierania użytkowników: ' . $db->error;
 }
+
+// Pobierz wszystkie zgłoszenia
+$reports = [];
+$stmt = $db->prepare("SELECT z.zgłoszenie_id, z.Treść, z.data_utworzenia, q.nazwa AS quiz_nazwa, q.quiz_id, u.Nazwa AS zglaszajacy_nazwa FROM zgłoszenie z JOIN quiz q ON z.quiz_id = q.quiz_id JOIN uzytkownicy u ON z.user_id = u.user_id ORDER BY z.data_utworzenia DESC");
+if ($stmt) {
+    $stmt->execute();
+    $result = $stmt->get_result();
+    while ($row = $result->fetch_assoc()) {
+        $reports[] = $row;
+    }
+    $stmt->close();
+} else {
+    $_SESSION['error'] = 'Błąd podczas pobierania zgłoszeń: ' . $db->error;
+}
+
 
 $db->close();
 ?>
@@ -258,6 +287,25 @@ $db->close();
             padding: 2px 4px;
             border-radius: 3px;
         }
+        /* Dodatkowe style dla skróconej treści zgłoszenia */
+        .report-content-cell {
+            max-width: 300px; /* Adjust as needed */
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            cursor: help; /* Wskazuje, że można najechać myszką */
+        }
+
+        .report-content-cell:hover {
+            white-space: normal;
+            overflow: visible;
+            text-overflow: unset;
+            max-width: none; /* Pozwól na pełną szerokość po najechaniu */
+            background-color: #f0f0f0; /* Lekkie podświetlenie po najechaniu */
+            position: relative; /* Umożliwia rozszerzenie treści bez wpływu na inne komórki */
+            z-index: 10; /* Upewnia się, że treść nie jest obcinana przez inne elementy */
+        }
+
 	</style>
 </head>
 <body>
@@ -321,6 +369,35 @@ $db->close();
 	</div>
 </div>
 
+<header>
+	<div>
+		<a href="index.php">
+			<img src="assets/logo.png" alt="logo mózgu">
+			<h2>Kto Pytał</h2>
+		</a>
+	</div>
+	<nav>
+		<ul>
+			<li><a href="index.php">Strona główna</a></li>
+			<li><a href="quizzCreator.php">Stwórz Quiz</a></li>
+			<li><a href="explore.php">Odkrywaj</a></li>
+			<li><a href="ranking.php">Ranking</a></li>
+            <?php if ($zalogowany): ?>
+				<li><a  id="selected-page" href="history.php">Historia</a></li>
+				<li><a href="profile.php">Profil</a></li>
+            <?php endif; ?>
+		</ul>
+	</nav>
+	<div class="header-auth">
+        <?php if ($zalogowany): ?>
+			<form method="post" action="php/logout.php" class="logout-form">
+				<button type="submit" class="logout-btn">Wyloguj się</button>
+			</form>
+        <?php else: ?>
+			<a href="#" id="open-login" class="signin-link">Zaloguj się</a>
+        <?php endif; ?>
+	</div>
+</header>
 <div class="hamburger">
 	<input type="checkbox" id="mobile-menu-toggle">
 	<label for="mobile-menu-toggle" class="hamburger-btn">
@@ -331,52 +408,25 @@ $db->close();
 	<div class="mobile-nav-overlay"></div>
 	<nav class="mobile-nav">
 		<ul>
-			<li><a href="index.php">Home</a></li>
-			<li><a href="quizzCreator.php">Create Quizz</a></li>
-			<li><a href="explore.php">Explore</a></li>
-			<li><a href="history.php">History</a></li>
-			<li><a href="profile.php">Profile</a></li>
-			<li><a href="admin.php">Admin Panel</a></li>
-		</ul>
-		<div class="mobile-auth">
+			<li><a href="index.php">Strona główna</a></li>
+			<li><a href="quizzCreator.php">Stwórz Quiz</a></li>
+			<li><a href="explore.php">Odkrywaj</a></li>
+			<li><a href="ranking.php">Ranking</a></li>
             <?php if ($zalogowany): ?>
-				<form method="post" action="php/logout.php">
-					<button type="submit">Logout</button>
-				</form>
-            <?php else: ?>
-				<a href="#" class="mobile-login-btn">Sign In</a>
+				<li><a href="history.php">Historia</a></li>
+				<li><a href="profile.php">Profil</a></li>
             <?php endif; ?>
-		</div>
+		</ul>
+        <?php if ($zalogowany): ?>
+			<div class="mobile-auth">
+				<form method="post" action="php/logout.php">
+					<button type="submit">Wyloguj się</button>
+				</form>
+			</div>
+        <?php endif; ?>
 	</nav>
 </div>
 
-<header>
-	<div>
-		<a href="index.php">
-			<img src="assets/logo.png" alt="logo mózgu">
-			<h2>Kto Pytał</h2>
-		</a>
-	</div>
-	<nav>
-		<ul>
-			<li><a href="index.php">Home</a></li>
-			<li><a href="quizzCreator.php">Create Quizz</a></li>
-			<li><a href="explore.php">Explore</a></li>
-			<li><a href="history.php">History</a></li>
-			<li><a href="profile.php">Profile</a></li>
-			<li><a id="selected-page" href="admin.php">Admin Panel</a></li>
-		</ul>
-	</nav>
-	<div class="header-auth">
-        <?php if ($zalogowany): ?>
-			<form method="post" action="php/logout.php" class="logout-form">
-				<button type="submit" class="logout-btn">Logout</button>
-			</form>
-        <?php else: ?>
-			<a href="#" id="open-login" class="signin-link">Sign In</a>
-        <?php endif; ?>
-	</div>
-</header>
 
 <main class="admin-panel-main">
 	<div class="admin-panel-container">
@@ -445,7 +495,7 @@ $db->close();
 									<a href="admin.php?delete_quiz=<?php echo $quiz['quiz_id']; ?>"
 									   onclick="return confirm('🗑️ Czy na pewno chcesz usunąć quiz \"
                                        <?php echo htmlspecialchars($quiz['nazwa']); ?>\"?\n\nSpowoduje to usunięcie:\n•
-									Wszystkich pytań i odpowiedzi\n• Komentarzy\n• Wyników\n• Polubień\n\nTa operacja
+									Wszystkich pytań i odpowiedzi\n• Komentarzy\n• Wyników\n• Polubień\n• Zgłoszeń\n\nTa operacja
 									jest nieodwracalna!');"
 									class="btn btn-delete">🗑️ Usuń</a>
 								</td>
@@ -514,7 +564,7 @@ $db->close();
                                     <?php if ($user['user_id'] != $_SESSION['user_id']): ?>
 										<a href="admin.php?delete_user=<?php echo $user['user_id']; ?>"
 										   onclick="return confirm('🗑️ Czy na pewno chcesz usunąć użytkownika \"
-                                           <?php echo htmlspecialchars($user['Nazwa']); ?>\"?\n\nSpowoduje to usunięcie:\n• Wszystkich jego quizów\n• Wyników\n• Komentarzy\n• Polubień\n\nTa operacja jest nieodwracalna!');"
+                                           <?php echo htmlspecialchars($user['Nazwa']); ?>\"?\n\nSpowoduje to usunięcie:\n• Wszystkich jego quizów\n• Wyników\n• Komentarzy\n• Polubień\n• Zgłoszeń (jeśli zgłaszał)\n\nTa operacja jest nieodwracalna!');"
 										                                                   class="btn btn-delete">🗑️ Usuń</a>
                                     <?php endif; ?>
 								</td>
@@ -524,6 +574,68 @@ $db->close();
 					</table>
 					<div class="no-results" id="user-no-results" style="display: none;">
 						<p>🔍 Nie znaleziono użytkowników pasujących do wyszukiwania.</p>
+					</div>
+				</div>
+            <?php endif; ?>
+		</section>
+
+		<section class="admin-section">
+			<h2>🚨 Zarządzanie Zgłoszeniami</h2>
+			<p class="section-description">Wszystkie zgłoszenia quizów (<span
+						id="reports-total"><?php echo count($reports); ?></span> zgłoszeń)</p>
+
+			<div class="search-container">
+				<div class="search-box">
+					<input type="text" id="report-search" class="search-input"
+					       placeholder="🔍 Wyszukaj zgłoszenia (nazwa quizu, treść, zgłaszający)...">
+				</div>
+				<div class="search-stats" id="report-search-stats"></div>
+			</div>
+
+            <?php if (empty($reports)): ?>
+				<div class="empty-state">
+					<p>✅ Brak nowych zgłoszeń.</p>
+				</div>
+            <?php else: ?>
+				<div class="table-container">
+					<table class="admin-table reports-table" id="reports-table">
+						<thead>
+						<tr>
+							<th>ID Zgłoszenia</th>
+							<th>Nazwa Quizu</th>
+							<th>Treść Zgłoszenia</th>
+							<th>Data Zgłoszenia</th>
+							<th>Zgłaszający</th>
+							<th>Akcje</th>
+						</tr>
+						</thead>
+						<tbody>
+                        <?php foreach ($reports as $report): ?>
+							<tr class="report-row"
+							    data-report-quiz-name="<?php echo htmlspecialchars(strtolower($report['quiz_nazwa'])); ?>"
+							    data-report-content="<?php echo htmlspecialchars(strtolower($report['Treść'])); ?>"
+							    data-report-reporter-name="<?php echo htmlspecialchars(strtolower($report['zglaszajacy_nazwa'])); ?>">
+								<td><?php echo htmlspecialchars($report['zgłoszenie_id']); ?></td>
+								<td class="report-quiz-name"><?php echo htmlspecialchars($report['quiz_nazwa']); ?></td>
+								<td class="report-content-cell" title="<?php echo htmlspecialchars($report['Treść']); ?>">
+                                    <?php echo htmlspecialchars(substr($report['Treść'], 0, 70)) . (strlen($report['Treść']) > 70 ? '...' : ''); ?>
+								</td>
+								<td><?php echo htmlspecialchars($report['data_utworzenia']); ?></td>
+								<td><?php echo htmlspecialchars($report['zglaszajacy_nazwa']); ?></td>
+								<td>
+									<a href="admin.php?delete_quiz=<?php echo $report['quiz_id']; ?>"
+									   onclick="return confirm('🗑️ Czy na pewno chcesz USUNĄĆ TEN QUIZ (ID: <?php echo $report['quiz_id']; ?>) powiązany ze zgłoszeniem (ID: <?php echo $report['zgłoszenie_id']; ?>)?\n\nSpowoduje to usunięcie:\n• Wszystkich pytań i odpowiedzi\n• Komentarzy\n• Wyników\n• Polubień\n• POWIĄZANYCH ZGŁOSZEŃ (W TYM TEGO)\n\nTa operacja jest nieodwracalna!');"
+									   class="btn btn-delete">🗑️ Usuń Quiz</a>
+									<a href="admin.php?delete_report=<?php echo $report['zgłoszenie_id']; ?>"
+									   onclick="return confirm('Czy na pewno chcesz usunąć to pojedyncze zgłoszenie (ID: <?php echo $report['zgłoszenie_id']; ?>)?\n\nTO NIE USUNIE QUIZU!');"
+									   class="btn btn-secondary">Usuń Zgłoszenie</a>
+								</td>
+							</tr>
+                        <?php endforeach; ?>
+						</tbody>
+					</table>
+					<div class="no-results" id="report-no-results" style="display: none;">
+						<p>🔍 Nie znaleziono zgłoszeń pasujących do wyszukiwania.</p>
 					</div>
 				</div>
             <?php endif; ?>
@@ -583,22 +695,29 @@ $db->close();
         return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
     }
 
-    function highlightText(row, searchTerm) {
-        const textCells = row.querySelectorAll('td:not(:last-child)'); // Wszystkie komórki oprócz akcji
+    function highlightText(row, searchTerm, cellSelectors) {
+        cellSelectors.forEach(selector => {
+            const cell = row.querySelector(selector);
+            if (cell) {
+                // Sprawdź, czy komórka już posiada data-original-text
+                let originalText = cell.getAttribute('data-original-text');
 
-        textCells.forEach(function (cell) {
-            const originalText = cell.getAttribute('data-original-text');
+                // Jeśli nie ma, zapisz jej aktualną zawartość jako oryginalną
+                if (!originalText) {
+                    originalText = cell.innerHTML;
+                    cell.setAttribute('data-original-text', originalText);
+                }
 
-            if (!originalText) {
-                cell.setAttribute('data-original-text', cell.innerHTML);
-            }
-
-            if (searchTerm === '') {
-                cell.innerHTML = originalText || cell.innerHTML; // Restore original if search is empty
-            } else {
-                const regex = new RegExp(`(${escapeRegExp(searchTerm)})`, 'gi');
-                const highlightedText = (originalText || cell.innerHTML).replace(regex, '<span class="highlight">$1</span>');
-                cell.innerHTML = highlightedText;
+                if (searchTerm === '') {
+                    // Jeśli wyszukiwanie jest puste, przywróć oryginalny tekst
+                    cell.innerHTML = originalText;
+                } else {
+                    // W przeciwnym razie, podświetl tekst
+                    const regex = new RegExp(`(${escapeRegExp(searchTerm)})`, 'gi');
+                    // Użyj oryginalnego tekstu do podświetlenia, aby uniknąć wielokrotnego podświetlania
+                    const highlightedText = originalText.replace(regex, '<span class="highlight">$1</span>');
+                    cell.innerHTML = highlightedText;
+                }
             }
         });
     }
@@ -628,7 +747,7 @@ $db->close();
             if (isVisible) {
                 row.style.display = '';
                 visibleCount++;
-                highlightText(row, searchTerm); // Apply highlighting
+                highlightText(row, searchTerm, ['.quiz-name', '.quiz-description', 'td:nth-child(4)']); // Apply highlighting to name, description, author
             } else {
                 row.style.display = 'none';
             }
@@ -646,13 +765,13 @@ $db->close();
         // Aktualizuj statystyki
         if (searchTerm !== '') {
             statsDiv.textContent = `Pokazano ${visibleCount} z ${totalCount} quizów`;
-            totalSpan.textContent = visibleCount;
+            totalSpan.textContent = visibleCount; // Update visible count in total span
         } else {
             statsDiv.textContent = '';
-            totalSpan.textContent = totalCount;
+            totalSpan.textContent = totalCount; // Restore total count
             // Clear highlights when search is empty
-            quizRows.forEach(function (row) {
-                highlightText(row, '');
+            quizRows.forEach(function(row) {
+                highlightText(row, '', ['.quiz-name', '.quiz-description', 'td:nth-child(4)']);
             });
         }
     });
@@ -682,7 +801,7 @@ $db->close();
             if (isVisible) {
                 row.style.display = '';
                 visibleCount++;
-                highlightText(row, searchTerm); // Apply highlighting
+                highlightText(row, searchTerm, ['.user-name', 'td:nth-child(3)', 'td:nth-child(4)']); // Apply highlighting to name, email, role
             } else {
                 row.style.display = 'none';
             }
@@ -700,13 +819,67 @@ $db->close();
         // Aktualizuj statystyki
         if (searchTerm !== '') {
             statsDiv.textContent = `Pokazano ${visibleCount} z ${totalCount} użytkowników`;
-            totalSpan.textContent = visibleCount;
+            totalSpan.textContent = visibleCount; // Update visible count in total span
         } else {
             statsDiv.textContent = '';
-            totalSpan.textContent = totalCount;
+            totalSpan.textContent = totalCount; // Restore total count
             // Clear highlights when search is empty
-            userRows.forEach(function (row) {
-                highlightText(row, '');
+            userRows.forEach(function(row) {
+                highlightText(row, '', ['.user-name', 'td:nth-child(3)', 'td:nth-child(4)']);
+            });
+        }
+    });
+
+    // Funkcja wyszukiwania zgłoszeń
+    document.getElementById('report-search').addEventListener('input', function () {
+        const searchTerm = this.value.toLowerCase().trim();
+        const reportRows = document.querySelectorAll('.report-row');
+        const reportTable = document.getElementById('reports-table');
+        const noResultsDiv = document.getElementById('report-no-results');
+        const statsDiv = document.getElementById('report-search-stats');
+        const totalSpan = document.getElementById('reports-total');
+
+        let visibleCount = 0;
+        let totalCount = reportRows.length;
+
+        reportRows.forEach(function (row) {
+            const quizName = row.getAttribute('data-report-quiz-name');
+            const reportContent = row.getAttribute('data-report-content');
+            const reporterName = row.getAttribute('data-report-reporter-name');
+
+            const isVisible = searchTerm === '' ||
+                quizName.includes(searchTerm) ||
+                reportContent.includes(searchTerm) ||
+                reporterName.includes(searchTerm);
+
+            if (isVisible) {
+                row.style.display = '';
+                visibleCount++;
+                highlightText(row, searchTerm, ['.report-quiz-name', '.report-content-cell', 'td:nth-child(5)']); // Apply highlighting
+            } else {
+                row.style.display = 'none';
+            }
+        });
+
+        // Pokaż/ukryj komunikat o braku wyników
+        if (searchTerm !== '' && visibleCount === 0) {
+            reportTable.style.display = 'none';
+            noResultsDiv.style.display = 'block';
+        } else {
+            reportTable.style.display = '';
+            noResultsDiv.style.display = 'none';
+        }
+
+        // Aktualizuj statystyki
+        if (searchTerm !== '') {
+            statsDiv.textContent = `Pokazano ${visibleCount} z ${totalCount} zgłoszeń`;
+            totalSpan.textContent = visibleCount; // Update visible count in total span
+        } else {
+            statsDiv.textContent = '';
+            totalSpan.textContent = totalCount; // Restore total count
+            // Clear highlights when search is empty
+            reportRows.forEach(function(row) {
+                highlightText(row, '', ['.report-quiz-name', '.report-content-cell', 'td:nth-child(5)']);
             });
         }
     });

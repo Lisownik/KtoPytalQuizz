@@ -140,12 +140,12 @@ mysqli_close($db); // Zamykamy połączenie z bazą danych
     </div>
     <nav>
         <ul>
-            <li><a id="selected-page" href="index.php">Strona główna</a></li>
+            <li><a href="index.php">Strona główna</a></li>
             <li><a href="quizzCreator.php">Stwórz Quiz</a></li>
             <li><a href="explore.php">Odkrywaj</a></li>
             <li><a href="ranking.php">Ranking</a></li>
             <?php if ($zalogowany): ?>
-                <li><a href="history.php">Historia</a></li>
+                <li><a  id="selected-page" href="history.php">Historia</a></li>
                 <li><a href="profile.php">Profil</a></li>
             <?php endif; ?>
         </ul>
@@ -170,12 +170,12 @@ mysqli_close($db); // Zamykamy połączenie z bazą danych
     <div class="mobile-nav-overlay"></div>
     <nav class="mobile-nav">
         <ul>
-            <li><a id="selected-page" href="index.php">Strona główna</a></li>
+            <li><a  href="index.php">Strona główna</a></li>
             <li><a href="quizzCreator.php">Stwórz Quiz</a></li>
             <li><a href="explore.php">Odkrywaj</a></li>
             <li><a href="ranking.php">Ranking</a></li>
             <?php if ($zalogowany): ?>
-                <li><a href="history.php">Historia</a></li>
+                <li><a id="selected-page" href="history.php">Historia</a></li>
                 <li><a href="profile.php">Profil</a></li>
             <?php endif; ?>
 		</ul>
