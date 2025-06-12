@@ -1,0 +1,401 @@
+/* admin.css - Style dla panelu administracyjnego */
+
+.admin-panel-main {
+    padding: 2rem 0;
+    min-height: calc(100vh - 200px);
+    background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+}
+
+.admin-panel-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 2rem;
+}
+
+.admin-panel-container h1 {
+    font-size: 2.5rem;
+    color: var(--color-primary);
+    text-align: center;
+    margin-bottom: 1rem;
+    font-weight: 700;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.admin-welcome {
+    background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+    padding: 2rem 2.5rem;
+    border-radius: var(--border-radius-lg);
+    box-shadow: var(--shadow-xl);
+    margin-bottom: 2rem;
+    border: 1px solid var(--color-gray-200);
+    position: relative;
+    overflow: hidden;
+}
+
+.admin-welcome::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 4px;
+    background: linear-gradient(90deg, var(--color-primary), var(--color-tertiary), var(--color-accent));
+}
+
+.admin-welcome::after {
+    content: '👑';
+    position: absolute;
+    top: 1.5rem;
+    right: 2rem;
+    font-size: 2rem;
+    opacity: 0.1;
+}
+
+.admin-welcome p {
+    margin: 0.75rem 0;
+    line-height: 1.6;
+}
+
+.admin-welcome p:first-child {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: var(--color-gray-800);
+    margin-bottom: 0.5rem;
+}
+
+.admin-welcome p:last-child {
+    font-size: 1rem;
+    color: var(--color-gray-600);
+    font-style: italic;
+    margin-top: 0.25rem;
+}
+
+.admin-welcome strong {
+    color: var(--color-primary);
+    font-weight: 700;
+    text-shadow: 0 1px 2px rgba(5, 102, 141, 0.1);
+    position: relative;
+}
+
+.admin-welcome strong::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background: linear-gradient(90deg, var(--color-primary), var(--color-accent));
+    border-radius: 1px;
+}
+
+/* Komunikaty */
+.message {
+    padding: 1rem 1.5rem;
+    border-radius: var(--border-radius);
+    margin: 1rem 0;
+    font-weight: 500;
+    box-shadow: var(--shadow-sm);
+}
+
+.message.error {
+    background: #fee2e2;
+    color: #dc2626;
+    border: 1px solid #fecaca;
+}
+
+.message.success {
+    background: #dcfce7;
+    color: #16a34a;
+    border: 1px solid #bbf7d0;
+}
+
+/* Sekcje administracyjne */
+.admin-section {
+    background: white;
+    border-radius: var(--border-radius-lg);
+    box-shadow: var(--shadow-lg);
+    margin: 2rem 0;
+    overflow: hidden;
+    border: 1px solid var(--color-gray-200);
+}
+
+.admin-section h2 {
+    background: var(--color-primary);
+    color: white;
+    padding: 1.5rem 2rem;
+    margin: 0;
+    font-size: 1.5rem;
+    font-weight: 600;
+}
+
+.section-description {
+    padding: 1rem 2rem 0;
+    color: var(--color-gray-600);
+    font-style: italic;
+    margin: 0;
+}
+
+.empty-state {
+    padding: 3rem 2rem;
+    text-align: center;
+    color: var(--color-gray-500);
+}
+
+.empty-state p {
+    font-size: 1.1rem;
+    margin: 0;
+}
+
+/* Kontenery tabel */
+.table-container {
+    overflow-x: auto;
+    margin: 1rem 0;
+}
+
+/* Style tabel */
+.admin-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: white;
+    font-size: 0.95rem;
+}
+
+.admin-table th {
+    background: var(--color-gray-100);
+    color: var(--color-gray-700);
+    padding: 1rem;
+    text-align: left;
+    font-weight: 600;
+    border-bottom: 2px solid var(--color-gray-200);
+    white-space: nowrap;
+}
+
+.admin-table td {
+    padding: 1rem;
+    border-bottom: 1px solid var(--color-gray-200);
+    vertical-align: middle;
+}
+
+.admin-table tbody tr:hover {
+    background: var(--color-gray-50);
+    transition: var(--transition);
+}
+
+.admin-table tbody tr.current-admin {
+    background: #f0f9ff;
+    border-left: 4px solid var(--color-primary);
+}
+
+.admin-table tbody tr.current-admin:hover {
+    background: #e0f2fe;
+}
+
+/* Specjalne style dla kolumn */
+.quiz-name {
+    font-weight: 600;
+    color: var(--color-primary);
+    max-width: 200px;
+    word-wrap: break-word;
+}
+
+.quiz-description {
+    max-width: 250px;
+    color: var(--color-gray-600);
+    line-height: 1.4;
+}
+
+.user-name {
+    font-weight: 600;
+    color: var(--color-tertiary);
+}
+
+.self-indicator {
+    font-size: 0.8rem;
+    color: var(--color-accent);
+    font-weight: 500;
+}
+
+/* Role badges */
+.role-badge {
+    padding: 0.25rem 0.75rem;
+    border-radius: 50px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.role-admin {
+    background: #dc2626;
+    color: white;
+}
+
+.role-moderator {
+    background: #ea580c;
+    color: white;
+}
+
+.role-user {
+    background: var(--color-gray-200);
+    color: var(--color-gray-700);
+}
+
+/* Przyciski */
+.btn {
+    padding: 0.5rem 1rem;
+    border-radius: var(--border-radius);
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 0.9rem;
+    transition: var(--transition);
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    border: none;
+    cursor: pointer;
+}
+
+.btn-delete {
+    background: #dc2626;
+    color: white;
+    box-shadow: var(--shadow-sm);
+}
+
+.btn-delete:hover {
+    background: #b91c1c;
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-md);
+}
+
+.text-muted {
+    color: var(--color-gray-500);
+    font-style: italic;
+    font-size: 0.9rem;
+}
+
+/* Responsywność */
+@media (max-width: 768px) {
+    .admin-panel-container {
+        padding: 0 1rem;
+    }
+
+    .admin-panel-container h1 {
+        font-size: 2rem;
+    }
+
+    .admin-welcome {
+        padding: 1.5rem 1.75rem;
+    }
+
+    .admin-welcome::after {
+        top: 1.25rem;
+        right: 1.5rem;
+        font-size: 1.5rem;
+    }
+
+    .admin-welcome p:first-child {
+        font-size: 1.1rem;
+    }
+
+    .admin-welcome p:last-child {
+        font-size: 0.95rem;
+    }
+
+    .admin-section h2 {
+        padding: 1rem 1.5rem;
+        font-size: 1.3rem;
+    }
+
+    .section-description {
+        padding: 1rem 1.5rem 0;
+    }
+
+    .admin-table {
+        font-size: 0.85rem;
+    }
+
+    .admin-table th,
+    .admin-table td {
+        padding: 0.75rem 0.5rem;
+    }
+
+    .quiz-name,
+    .quiz-description {
+        max-width: 150px;
+    }
+
+    .btn {
+        padding: 0.4rem 0.8rem;
+        font-size: 0.8rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .admin-panel-container h1 {
+        font-size: 1.5rem;
+    }
+
+    .admin-welcome {
+        padding: 1.25rem 1.5rem;
+    }
+
+    .admin-welcome::after {
+        display: none;
+    }
+
+    .admin-welcome p:first-child {
+        font-size: 1rem;
+    }
+
+    .admin-welcome p:last-child {
+        font-size: 0.9rem;
+    }
+
+    .admin-section h2 {
+        padding: 0.75rem 1rem;
+        font-size: 1.1rem;
+    }
+
+    .section-description {
+        padding: 0.75rem 1rem 0;
+        font-size: 0.9rem;
+    }
+
+    .admin-table th,
+    .admin-table td {
+        padding: 0.5rem 0.25rem;
+    }
+
+    .table-container {
+        margin: 0.5rem 0;
+    }
+}
+
+/* Dodatkowe style dla lepszego UX */
+.admin-table tbody tr {
+    transition: all 0.2s ease;
+}
+
+.admin-section {
+    transition: all 0.3s ease;
+}
+
+.admin-section:hover {
+    box-shadow: var(--shadow-xl);
+}
+
+/* Loading states */
+.loading {
+    opacity: 0.6;
+    pointer-events: none;
+}
+
+/* Confirmation dialogs enhancement */
+.btn-delete {
+    position: relative;
+}
+
+.btn-delete:active {
+    transform: translateY(0);
+    box-shadow: var(--shadow-sm);
+}
