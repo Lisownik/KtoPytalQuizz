@@ -20,64 +20,60 @@ $zalogowany = isset($_SESSION['zalogowany']) ? $_SESSION['zalogowany'] : false;
     <title>Create Quiz - Kto Pytał</title>
 </head>
 <body>
-
 <div class="hamburger">
-    <input type="checkbox" id="mobile-menu-toggle">
-    <label for="mobile-menu-toggle" class="hamburger-btn">
-        <span></span>
-        <span></span>
-        <span></span>
-    </label>
-    <div class="mobile-nav-overlay"></div>
-    <nav class="mobile-nav">
-        <ul>
-            <li><a href="index.php">Home</a></li>
-            <li><a href="quizzCreator.php">Create Quizz</a></li>
-            <li><a href="explore.php">Explore</a></li>
-            <li><a href="profile.php">Profile</a></li>
-            <li><a href="history.php">History</a></li>
-        </ul>
-        <div class="mobile-auth">
+	<input type="checkbox" id="mobile-menu-toggle">
+	<label for="mobile-menu-toggle" class="hamburger-btn">
+		<span></span>
+		<span></span>
+		<span></span>
+	</label>
+	<div class="mobile-nav-overlay"></div>
+	<nav class="mobile-nav">
+		<ul>
+			<li><a href="index.php">Strona główna</a></li>
+			<li><a href="quizzCreator.php">Stwórz Quiz</a></li>
+			<li><a href="explore.php">Odkryj</a></li>
+			<li><a href="profile.php">Profil</a></li>
+			<li><a href="history.php">Historia</a></li>
+		</ul>
+		<div class="mobile-auth">
             <?php if ($zalogowany): ?>
-                <form method="post" action="php/logout.php">
-                    <button type="submit">Logout</button>
-                </form>
+				<form method="post" action="php/logout.php">
+					<button type="submit">Wyloguj się</button>
+				</form>
             <?php else: ?>
-                <a href="quizzCreator.php" class="mobile-login-btn">Sign In</a>
+				<a href="quizzCreator.php" class="mobile-login-btn">Zaloguj się</a>
             <?php endif; ?>
-        </div>
-    </nav>
+		</div>
+	</nav>
 </div>
 
 <header>
-    <div>
-        <a href="index.php">
-            <img src="assets/logo.png" alt="logo mózgu">
-            <h2>Kto Pytał</h2>
-        </a>
-    </div>
-    <nav>
-        <ul>
-            <li><a href="index.php">Home</a></li>
-            <li><a id="selected-page" href="quizzCreator.php">Create Quizz</a></li>
-            <li><a href="explore.php">Explore</a></li>
-            <li><a href="history.php">History</a></li>
-            <?php if ($zalogowany): ?>
-                <li><a href="profile.php">Profile</a></li>
-            <?php endif; ?>
-        </ul>
-    </nav>
-    <div class="header-auth">
+	<div>
+		<a href="index.php">
+			<img src="assets/logo.png" alt="logo mózgu">
+			<h2>Kto Pytał</h2>
+		</a>
+	</div>
+	<nav>
+		<ul>
+			<li><a href="index.php">Strona główna</a></li>
+			<li><a id="selected-page" href="quizzCreator.php">Stwórz Quiz</a></li>
+			<li><a href="explore.php">Odkryj</a></li>
+				<li><a href="profile.php">Profil</a></li>
+			<li><a href="history.php">Historia</a></li>
+		</ul>
+	</nav>
+	<div class="header-auth">
         <?php if ($zalogowany): ?>
-            <form method="post" action="php/logout.php" class="logout-form">
-                <button type="submit" class="logout-btn">Logout</button>
-            </form>
+			<form method="post" action="php/logout.php" class="logout-form">
+				<button type="submit" class="logout-btn">Wyloguj się</button>
+			</form>
         <?php else: ?>
-            <a href="quizzCreator.php" class="signin-link">Sign In</a>
+			<a href="quizzCreator.php" class="signin-link">Zaloguj się</a>
         <?php endif; ?>
-    </div>
+	</div>
 </header>
-
 <main class="container">
     <!-- Komunikaty o błędach i sukcesie -->
     <?php if (isset($_SESSION['error'])): ?>
@@ -99,16 +95,16 @@ $zalogowany = isset($_SESSION['zalogowany']) ? $_SESSION['zalogowany'] : false;
     <?php endif; ?>
 
     <form id="quiz-form" method="post" action="php/saveQuiz.php">
-        <h2 class="create-quiz-title">Create New Quiz</h2>
+        <h2 class="create-quiz-title">Stwórz nowy quiz</h2>
 
         <section class="form-group">
-            <label for="quiz-title">Quiz Title</label>
-            <input type="text" id="quiz-title" name="quiz_title" class="form-control" placeholder="Enter quiz title" required>
+            <label for="quiz-title">Tytuł quizu</label>
+            <input type="text" id="quiz-title" name="quiz_title" class="form-control" placeholder="Wpisz tytuł quizu" required>
         </section>
 
         <section class="form-group">
-            <label for="quiz-description">Description</label>
-            <textarea id="quiz-description" name="quiz_description" class="form-control" placeholder="Enter quiz description"></textarea>
+            <label for="quiz-description">Opis</label>
+            <textarea id="quiz-description" name="quiz_description" class="form-control" placeholder="Wpisz opis quizu"></textarea>
         </section>
 
         <hr>
@@ -116,17 +112,17 @@ $zalogowany = isset($_SESSION['zalogowany']) ? $_SESSION['zalogowany'] : false;
         <div id="questions-container">
             <section class="question-container" data-question-number="1">
                 <div class="question-header">
-                    <h3 class="question-title">Question 1</h3>
+                    <h3 class="question-title">Pytanie 1</h3>
                     <button type="button" class="delete-btn">×</button>
                 </div>
 
                 <section class="form-group">
-                    <input type="text" name="questions[0][text]" class="form-control question-input" placeholder="Enter your question" required>
+                    <input type="text" name="questions[0][text]" class="form-control question-input" placeholder="Treść pytania" required>
                 </section>
 
                 <div class="correct-answer-header">
-                    <h4>Select the correct answer(s)</h4>
-                    <p>Choose which of the options below are correct answers for this question. You can select multiple options.</p>
+                    <h4>Zaznacz poprawne odpowiedzi</h4>
+                    <p>Wybierz, które odpowiedzi z poniższych mają być uznawane jako prawidłowe</p>
                 </div>
 
                 <section class="options-container">
@@ -135,9 +131,8 @@ $zalogowany = isset($_SESSION['zalogowany']) ? $_SESSION['zalogowany'] : false;
                             <input type="checkbox" name="questions[0][correct][]" value="0">
                             <span class="checkbox-custom"></span>
                         </label>
-                        <span class="correct-label">Correct</span>
                         <div class="option-input-wrapper">
-                            <input type="text" name="questions[0][options][]" class="form-control option-input" placeholder="Option 1" required>
+                            <input type="text" name="questions[0][options][]" class="form-control option-input" placeholder="Odpowiedź 1" required>
                         </div>
                     </div>
                     <div class="option-wrapper">
@@ -145,9 +140,8 @@ $zalogowany = isset($_SESSION['zalogowany']) ? $_SESSION['zalogowany'] : false;
                             <input type="checkbox" name="questions[0][correct][]" value="1">
                             <span class="checkbox-custom"></span>
                         </label>
-                        <span class="correct-label">Correct</span>
                         <div class="option-input-wrapper">
-                            <input type="text" name="questions[0][options][]" class="form-control option-input" placeholder="Option 2" required>
+                            <input type="text" name="questions[0][options][]" class="form-control option-input" placeholder="Odpowiedź 2" required>
                         </div>
                     </div>
                     <div class="option-wrapper">
@@ -155,9 +149,8 @@ $zalogowany = isset($_SESSION['zalogowany']) ? $_SESSION['zalogowany'] : false;
                             <input type="checkbox" name="questions[0][correct][]" value="2">
                             <span class="checkbox-custom"></span>
                         </label>
-                        <span class="correct-label">Correct</span>
                         <div class="option-input-wrapper">
-                            <input type="text" name="questions[0][options][]" class="form-control option-input" placeholder="Option 3">
+                            <input type="text" name="questions[0][options][]" class="form-control option-input" placeholder="Odpowiedź 3">
                         </div>
                     </div>
                     <div class="option-wrapper">
@@ -165,61 +158,59 @@ $zalogowany = isset($_SESSION['zalogowany']) ? $_SESSION['zalogowany'] : false;
                             <input type="checkbox" name="questions[0][correct][]" value="3">
                             <span class="checkbox-custom"></span>
                         </label>
-                        <span class="correct-label">Correct</span>
                         <div class="option-input-wrapper">
-                            <input type="text" name="questions[0][options][]" class="form-control option-input" placeholder="Option 4">
+                            <input type="text" name="questions[0][options][]" class="form-control option-input" placeholder="Odpowiedź 4">
                         </div>
                     </div>
                 </section>
             </section>
         </div>
 
-        <button type="button" class="add-question-btn" id="add-question-btn">+ Add Question</button>
+        <button type="button" class="add-question-btn" id="add-question-btn">+ Dodaj pytanie</button>
 
         <section class="button-container">
-            <button type="submit" name="save_draft" class="save-btn">Save Draft</button>
-            <button type="submit" name="publish_quiz" class="publish-btn">Publish Quiz</button>
+            <button type="submit" name="publish_quiz" class="publish-btn">Opublikuj quiz</button>
         </section>
     </form>
 </main>
 
 <footer>
-    <div class="footer-content">
-        <div class="footer-section">
-            <h4>Kto Pytał</h4>
-            <p>Making quiz creation and sharing easier than ever. Build engaging quizzes that captivate your audience.</p>
-        </div>
-        <div class="footer-section">
-            <h4>Quick Links</h4>
-            <ul>
-                <li>About Us</li>
-                <li>Features</li>
-                <li>Pricing</li>
-                <li>Blog</li>
-            </ul>
-        </div>
-        <div class="footer-section">
-            <h4>Support</h4>
-            <ul>
-                <li>Help Center</li>
-                <li>Contact Us</li>
-                <li>Privacy Policy</li>
-                <li>Terms of Service</li>
-            </ul>
-        </div>
-        <div class="footer-section">
-            <h4>Follow Us</h4>
-            <ul>
-                <li>Facebook</li>
-                <li>Twitter</li>
-                <li>Instagram</li>
-                <li>LinkedIn</li>
-            </ul>
-        </div>
-    </div>
-    <div class="footer-bottom">
-        <p>© <?php echo date('Y'); ?> Kto Pytał. All rights reserved.</p>
-    </div>
+	<div class="footer-content">
+		<div class="footer-section">
+			<h4>Kto Pytał</h4>
+			<p>Robimy, że tworzenie i dzielenie się quizami jest bardzo łatwe. Rób ciekawe quizy, które się spodobają.</p>
+		</div>
+		<div class="footer-section">
+			<h4>Szybkie linki</h4>
+			<ul>
+				<li>O nas</li>
+				<li>Co umiemy</li>
+				<li>Ceny</li>
+				<li>Nasze artykuły</li>
+			</ul>
+		</div>
+		<div class="footer-section">
+			<h4>Pomoc</h4>
+			<ul>
+				<li>Pomoc</li>
+				<li>Napisz do nas</li>
+				<li>Zasady prywatności</li>
+				<li>Zasady korzystania</li>
+			</ul>
+		</div>
+		<div class="footer-section">
+			<h4>Bądź z nami</h4>
+			<ul>
+				<li>Facebook</li>
+				<li>Twitter</li>
+				<li>Instagram</li>
+				<li>LinkedIn</li>
+			</ul>
+		</div>
+	</div>
+	<div class="footer-bottom">
+		<p>&copy; <?php echo date('Y'); ?> Kto Pytał. Wszystkie prawa zastrzeżone.</p>
+	</div>
 </footer>
 
 <script src="js/mobile-menu.js"></script>
@@ -241,17 +232,17 @@ $zalogowany = isset($_SESSION['zalogowany']) ? $_SESSION['zalogowany'] : false;
             const newQuestionHTML = `
             <section class="question-container" data-question-number="${questionCounter}">
                 <div class="question-header">
-                    <h3 class="question-title">Question ${questionCounter}</h3>
+                    <h3 class="question-title">Pytanie ${questionCounter}</h3>
                     <button type="button" class="delete-btn">×</button>
                 </div>
 
                 <section class="form-group">
-                    <input type="text" name="questions[${questionCounter - 1}][text]" class="form-control question-input" placeholder="Enter your question" required>
+                    <input type="text" name="questions[${questionCounter - 1}][text]" class="form-control question-input" placeholder="Treść pytania" required>
                 </section>
 
                 <div class="correct-answer-header">
-                    <h4>Select the correct answer(s)</h4>
-                    <p>Choose which of the options below are correct answers for this question. You can select multiple options.</p>
+                    <h4>Zaznacz poprawne odpowiedzi</h4>
+                    <p>Wybierz, które odpowiedzi z poniższych mają być uznawane jako prawidłowe</p>
                 </div>
 
                 <section class="options-container">
@@ -260,9 +251,8 @@ $zalogowany = isset($_SESSION['zalogowany']) ? $_SESSION['zalogowany'] : false;
                             <input type="checkbox" name="questions[${questionCounter - 1}][correct][]" value="0">
                             <span class="checkbox-custom"></span>
                         </label>
-                        <span class="correct-label">Correct</span>
                         <div class="option-input-wrapper">
-                            <input type="text" name="questions[${questionCounter - 1}][options][]" class="form-control option-input" placeholder="Option 1" required>
+                            <input type="text" name="questions[${questionCounter - 1}][options][]" class="form-control option-input" placeholder="Odpowiedź 1" required>
                         </div>
                     </div>
                     <div class="option-wrapper">
@@ -270,9 +260,8 @@ $zalogowany = isset($_SESSION['zalogowany']) ? $_SESSION['zalogowany'] : false;
                             <input type="checkbox" name="questions[${questionCounter - 1}][correct][]" value="1">
                             <span class="checkbox-custom"></span>
                         </label>
-                        <span class="correct-label">Correct</span>
                         <div class="option-input-wrapper">
-                            <input type="text" name="questions[${questionCounter - 1}][options][]" class="form-control option-input" placeholder="Option 2" required>
+                            <input type="text" name="questions[${questionCounter - 1}][options][]" class="form-control option-input" placeholder="Odpowiedź 2" required>
                         </div>
                     </div>
                     <div class="option-wrapper">
@@ -280,9 +269,8 @@ $zalogowany = isset($_SESSION['zalogowany']) ? $_SESSION['zalogowany'] : false;
                             <input type="checkbox" name="questions[${questionCounter - 1}][correct][]" value="2">
                             <span class="checkbox-custom"></span>
                         </label>
-                        <span class="correct-label">Correct</span>
                         <div class="option-input-wrapper">
-                            <input type="text" name="questions[${questionCounter - 1}][options][]" class="form-control option-input" placeholder="Option 3">
+                            <input type="text" name="questions[${questionCounter - 1}][options][]" class="form-control option-input" placeholder="Odpowiedź 3">
                         </div>
                     </div>
                     <div class="option-wrapper">
@@ -290,9 +278,8 @@ $zalogowany = isset($_SESSION['zalogowany']) ? $_SESSION['zalogowany'] : false;
                             <input type="checkbox" name="questions[${questionCounter - 1}][correct][]" value="3">
                             <span class="checkbox-custom"></span>
                         </label>
-                        <span class="correct-label">Correct</span>
                         <div class="option-input-wrapper">
-                            <input type="text" name="questions[${questionCounter - 1}][options][]" class="form-control option-input" placeholder="Option 4">
+                            <input type="text" name="questions[${questionCounter - 1}][options][]" class="form-control option-input" placeholder="Odpowiedź 4">
                         </div>
                     </div>
                 </section>

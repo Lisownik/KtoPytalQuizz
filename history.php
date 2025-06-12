@@ -1,20 +1,19 @@
 <?php
 session_start();
-require_once("config/db.php"); // Załóż, że masz plik db.php z połączeniem do bazy
+require_once("config/db.php"); // Potrzebujemy pliku do połączenia z bazą danych
 
-$zalogowany = isset($_SESSION['zalogowany']) ? $_SESSION['zalogowany'] : false;
-$user_id = $zalogowany ? (isset($_SESSION['user_id']) ? (int)$_SESSION['user_id'] : null) : null;
+$zalogowany = isset($_SESSION['zalogowany']) ? $_SESSION['zalogowany'] : false; // Sprawdzamy, czy użytkownik jest zalogowany
+$user_id = $zalogowany ? (isset($_SESSION['user_id']) ? (int)$_SESSION['user_id'] : null) : null; // Jeśli zalogowany, pobieramy jego ID
 
-// Sprawdzenie połączenia z bazą danych
+// Sprawdzenie, czy udało się połączyć z bazą danych
 if (mysqli_connect_errno()) {
-    exit('Nie udało się połączyć z bazą danych :( ' . mysqli_connect_error());
+    exit('Nie udało się połączyć z bazą danych. Spróbuj później. ' . mysqli_connect_error()); // Informujemy, jeśli nie ma połączenia
 }
 
-$history_records = []; // Tablica do przechowywania wyników quizów
+$history_records = []; // Tutaj będziemy trzymać wyniki quizów
 
-if ($zalogowany && $user_id !== null) {
-    // Zapytanie SQL do pobrania historii quizów dla danego użytkownika
-    // Łączymy wyniki_quizow z tabelą quiz, aby uzyskać nazwę quizu
+if ($zalogowany && $user_id !== null) { // Jeśli użytkownik jest zalogowany i ma ID
+    // Pobieramy historię quizów dla tego użytkownika
     $query = "
         SELECT
             wq.wynik_id,
@@ -31,38 +30,38 @@ if ($zalogowany && $user_id !== null) {
             wq.data_rozwiazania DESC;
     ";
 
-    $stmt = mysqli_prepare($db, $query);
+    $stmt = mysqli_prepare($db, $query); // Przygotowujemy zapytanie
 
-    if ($stmt) {
-        mysqli_stmt_bind_param($stmt, 'i', $user_id);
-        mysqli_stmt_execute($stmt);
-        $result = mysqli_stmt_get_result($stmt);
+    if ($stmt) { // Jeśli zapytanie jest gotowe
+        mysqli_stmt_bind_param($stmt, 'i', $user_id); // Wiążemy ID użytkownika z zapytaniem
+        mysqli_stmt_execute($stmt); // Wykonujemy zapytanie
+        $result = mysqli_stmt_get_result($stmt); // Pobieramy wyniki
 
-        if ($result) {
-            while ($row = mysqli_fetch_assoc($result)) {
-                $history_records[] = $row;
+        if ($result) { // Jeśli są wyniki
+            while ($row = mysqli_fetch_assoc($result)) { // Przechodzimy przez każdy wynik
+                $history_records[] = $row; // Dodajemy go do naszej listy
             }
-            mysqli_free_result($result);
+            mysqli_free_result($result); // Zwalniamy pamięć
         } else {
-            error_log("Błąd pobierania wyników quizów: " . mysqli_error($db));
+            error_log("Błąd pobierania wyników quizów: " . mysqli_error($db)); // Logujemy błąd
         }
-        mysqli_stmt_close($stmt);
+        mysqli_stmt_close($stmt); // Zamykamy zapytanie
     } else {
-        error_log("Błąd przygotowania zapytania SQL dla historii: " . mysqli_error($db));
+        error_log("Błąd przygotowania zapytania SQL dla historii: " . mysqli_error($db)); // Logujemy błąd przygotowania zapytania
     }
 }
 
-mysqli_close($db); // Zamknij połączenie z bazą danych na końcu skryptu
+mysqli_close($db); // Zamykamy połączenie z bazą danych
 ?>
 <!DOCTYPE html>
 <html lang="pl">
 <head>
 	<meta charset="UTF-8">
 	<meta name="keywords" content="historia quizów, wyniki, statystyki"/>
-	<meta name="description" content="Historia rozwiązanych quizów i wyniki użytkownika"/>
-	<meta name="author" content="Same sigmy team"/>
+	<meta name="description" content="Tutaj znajdziesz swoje dawne quizy i wyniki"/>
+	<meta name="author" content="Ekipa Same sigmy"/>
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<title>Historia Quizów - Kto Pytał</title>
+	<title>Moje quizy - Kto Pytał</title>
 
 	<link rel="preconnect" href="https://fonts.googleapis.com">
 	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -76,25 +75,25 @@ mysqli_close($db); // Zamknij połączenie z bazą danych na końcu skryptu
 <div id="auth-modal-backdrop" aria-hidden="true">
 	<div id="auth-modal" role="dialog" aria-modal="true" aria-labelledby="auth-heading">
 		<div class="sign" id="log_in">
-			<h2 id="auth-heading">Log in</h2>
+			<h2 id="auth-heading">Zaloguj się</h2>
 			<form method="post" action="php/login.php">
-				<label for="lusername">Username</label>
-				<input type="text" id="lusername" placeholder="Enter username" name="username" required>
-				<label for="lpassword">Password</label>
-				<input type="password" id="lpassword" placeholder="Enter password" name="password" required>
-				<button type="submit" class="btn btn-primary">Log in</button>
+				<label for="lusername">Nazwa użytkownika</label>
+				<input type="text" id="lusername" placeholder="Wpisz nazwę" name="username" required>
+				<label for="lpassword">Hasło</label>
+				<input type="password" id="lpassword" placeholder="Wpisz hasło" name="password" required>
+				<button type="submit" class="btn btn-primary">Zaloguj się</button>
 			</form>
 		</div>
 
 		<div class="sign" id="register">
-			<h2 id="auth-heading">Sign up</h2>
+			<h2 id="auth-heading">Załóż konto</h2>
 			<form method="post" action="php/register.php" id="registerForm">
-				<label for="rusername">Username</label>
-				<input type="text" id="rusername" placeholder="Enter username" name="username" required>
+				<label for="rusername">Nazwa użytkownika</label>
+				<input type="text" id="rusername" placeholder="Wpisz nazwę" name="username" required>
 				<label for="rmail">E-mail</label>
-				<input type="email" id="rmail" placeholder="Enter email" name="email" required>
-				<label for="rpassword">Password</label>
-				<input type="password" id="rpassword" placeholder="Enter password" name="password" required>
+				<input type="email" id="rmail" placeholder="Wpisz e-mail" name="email" required>
+				<label for="rpassword">Hasło</label>
+				<input type="password" id="rpassword" placeholder="Wpisz hasło" name="password" required>
 
 				<div class="password-requirements" id="passwordRequirements">
 					<div class="requirement invalid" id="req-length">
@@ -119,15 +118,15 @@ mysqli_close($db); // Zamknij połączenie z bazą danych na końcu skryptu
 					</div>
 				</div>
 
-				<label for="rpasswordconfirm">Repeat Password</label>
-				<input type="password" id="rpasswordconfirm" placeholder="Repeat password" required>
+				<label for="rpasswordconfirm">Powtórz hasło</label>
+				<input type="password" id="rpasswordconfirm" placeholder="Powtórz hasło" required>
 				<div class="password-match-message" id="password-match-message"></div>
-				<button type="submit" class="btn btn-primary">Register</button>
+				<button type="submit" class="btn btn-primary">Zarejestruj się</button>
 			</form>
 		</div>
 
 		<p id="toggle-auth" aria-live="polite" role="status">
-			<a href="#" id="toggle-link">Don't have an account? Sign up</a>
+			<a href="#" id="toggle-link">Nie masz konta? Załóż je</a>
 		</p>
 	</div>
 </div>
@@ -142,18 +141,18 @@ mysqli_close($db); // Zamknij połączenie z bazą danych na końcu skryptu
 	<div class="mobile-nav-overlay"></div>
 	<nav class="mobile-nav">
 		<ul>
-            <li><a href="index.php">Home</a></li>
-            <li><a href="quizzCreator.php">Create Quizz</a></li>
-            <li><a href="explore.php">Explore</a></li>
-            <li><a id="selected-page" href="history.php">History</a></li>
+			<li><a href="index.php">Start</a></li>
+			<li><a href="quizzCreator.php">Stwórz Quiz</a></li>
+			<li><a href="explore.php">Znajdź Quiz</a></li>
+			<li><a id="selected-page" href="history.php">Moje quizy</a></li>
             <?php if ($zalogowany): ?>
-                <li><a href="profile.php">Profile</a></li>
+				<li><a href="profile.php">Mój profil</a></li>
             <?php endif; ?>
 		</ul>
         <?php if ($zalogowany): ?>
 			<div class="mobile-auth">
 				<form method="post" action="php/logout.php">
-					<button type="submit">Logout</button>
+					<button type="submit">Wyloguj się</button>
 				</form>
 			</div>
         <?php endif; ?>
@@ -162,37 +161,37 @@ mysqli_close($db); // Zamknij połączenie z bazą danych na końcu skryptu
 
 <header>
 	<div>
-        <a href="index.php">
-            <img src="assets/logo.png" alt="logo mózgu">
-            <h2>Kto Pytał</h2>
-        </a>
+		<a href="index.php">
+			<img src="assets/logo.png" alt="logo mózgu">
+			<h2>Kto Pytał</h2>
+		</a>
 	</div>
 	<nav>
 		<ul>
-			<li><a href="index.php">Home</a></li>
-			<li><a href="quizzCreator.php">Create Quizz</a></li>
-			<li><a href="explore.php">Explore</a></li>
-            <li><a id="selected-page" href="history.php">History</a></li>
+			<li><a href="index.php">Start</a></li>
+			<li><a href="quizzCreator.php">Stwórz Quiz</a></li>
+			<li><a href="explore.php">Znajdź Quiz</a></li>
+			<li><a id="selected-page" href="history.php">Moje quizy</a></li>
             <?php if ($zalogowany): ?>
-                <li><a href="profile.php">Profile</a></li>
+				<li><a href="profile.php">Mój profil</a></li>
             <?php endif; ?>
 		</ul>
 	</nav>
 	<div class="header-auth">
         <?php if ($zalogowany): ?>
 			<form method="post" action="php/logout.php" class="logout-form">
-				<button type="submit" class="logout-btn">Logout</button>
+				<button type="submit" class="logout-btn">Wyloguj się</button>
 			</form>
         <?php else: ?>
-			<a href="#" id="open-login" class="signin-link">Sign In</a>
+			<a href="#" id="open-login" class="signin-link">Zaloguj się</a>
         <?php endif; ?>
 	</div>
 </header>
 
 <main class="historia-container">
 	<div class="historia-header">
-		<h1 class="historia-title">Historia Quizów</h1>
-		<p class="historia-subtitle">Twoje wyniki i postępy w rozwiązywaniu quizów</p>
+		<h1 class="historia-title">Moje quizy</h1>
+		<p class="historia-subtitle">Sprawdź, jak Ci poszło w quizach</p>
 	</div>
 
 	<div class="quiz-history">
@@ -206,18 +205,18 @@ mysqli_close($db); // Zamknij połączenie z bazą danych na końcu skryptu
         <?php elseif ($zalogowany && empty($history_records)): ?>
 			<div class="empty-state">
 				<div class="empty-icon">📚</div>
-				<h3 class="empty-title">Brak historii quizów</h3>
+				<h3 class="empty-title">Nie masz jeszcze żadnych quizów</h3>
 				<p class="empty-description">
-					Nie rozwiązałeś jeszcze żadnego quizu. Zacznij swoją przygodę z nauką już teraz!
+					Zacznij rozwiązywać quizy, żeby tu coś zobaczyć!
 				</p>
-				<a href="explore.php" class="btn-explore">🔍 Przeglądaj Quizy</a>
+				<a href="explore.php" class="btn-explore">🔍 Szukaj quizów</a>
 			</div>
         <?php else: ?>
 			<div class="empty-state">
 				<div class="empty-icon">🔒</div>
-				<h3 class="empty-title">Zaloguj się, aby zobaczyć historię quizów</h3>
+				<h3 class="empty-title">Zaloguj się, żeby zobaczyć swoje quizy</h3>
 				<p class="empty-description">
-					Zaloguj się na swoje konto, aby śledzić swoje postępy i wyniki.
+					Zaloguj się, żeby śledzić swoje wyniki i postępy.
 				</p>
 				<a href="#" id="open-login-modal" class="btn-explore mobile-login-btn">Zaloguj się</a>
 			</div>
@@ -229,28 +228,28 @@ mysqli_close($db); // Zamknij połączenie z bazą danych na końcu skryptu
 	<div class="footer-content">
 		<div class="footer-section">
 			<h4>Kto Pytał</h4>
-			<p>Making quiz creation and sharing easier than ever. Build engaging quizzes that captivate your audience.</p>
+			<p>Robimy, że tworzenie i dzielenie się quizami jest bardzo łatwe. Rób ciekawe quizy, które się spodobają.</p>
 		</div>
 		<div class="footer-section">
-			<h4>Quick Links</h4>
+			<h4>Szybkie linki</h4>
 			<ul>
-				<li>About Us</li>
-				<li>Features</li>
-				<li>Pricing</li>
-				<li>Blog</li>
+				<li>O nas</li>
+				<li>Co umiemy</li>
+				<li>Ceny</li>
+				<li>Nasze artykuły</li>
 			</ul>
 		</div>
 		<div class="footer-section">
-			<h4>Support</h4>
+			<h4>Pomoc</h4>
 			<ul>
-				<li>Help Center</li>
-				<li>Contact Us</li>
-				<li>Privacy Policy</li>
-				<li>Terms of Service</li>
+				<li>Pomoc</li>
+				<li>Napisz do nas</li>
+				<li>Zasady prywatności</li>
+				<li>Zasady korzystania</li>
 			</ul>
 		</div>
 		<div class="footer-section">
-			<h4>Follow Us</h4>
+			<h4>Bądź z nami</h4>
 			<ul>
 				<li>Facebook</li>
 				<li>Twitter</li>
@@ -260,7 +259,7 @@ mysqli_close($db); // Zamknij połączenie z bazą danych na końcu skryptu
 		</div>
 	</div>
 	<div class="footer-bottom">
-		<p>&copy; <?php echo date('Y'); ?> Kto Pytał. All rights reserved.</p>
+		<p>&copy; <?php echo date('Y'); ?> Kto Pytał. Wszystkie prawa zastrzeżone.</p>
 	</div>
 </footer>
 
@@ -269,7 +268,7 @@ mysqli_close($db); // Zamknij połączenie z bazą danych na końcu skryptu
 <script src="js/password-validation.js"></script>
 <script src="js/requirements-visibility.js"></script>
 <script>
-    // Dodatkowa obsługa otwierania modala logowania z sekcji historii dla niezalogowanych
+    // Dodatkowa obsługa otwierania okienka logowania dla niezalogowanych
     document.getElementById('open-login-modal').addEventListener('click', function(e) {
         e.preventDefault();
         document.getElementById('auth-modal-backdrop').setAttribute('aria-hidden', 'false');

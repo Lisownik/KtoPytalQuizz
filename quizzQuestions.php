@@ -444,7 +444,7 @@ mysqli_close($db);
 			</div>
         <?php elseif ($display_results_section): ?>
 			<div class="quiz-results" id="quiz-results">
-				<h2>Quiz Completed!</h2>
+				<h2>Quiz zakończony!</h2>
 				<p id="results-score">Twój wynik: <?php echo $current_score; ?> / <?php echo $total_questions; ?></p>
                 <?php
                 // Generowanie podsumowania tekstowego
@@ -461,9 +461,9 @@ mysqli_close($db);
                 ?>
 				<p id="results-summary"><?php echo $summaryText; ?></p>
 				<form method="POST" action="quizzQuestions.php?id=<?php echo $quiz_id; ?>">
-					<button type="submit" name="restart_quiz" class="btn-next btn-restart">Restart Quiz</button>
+					<button type="submit" name="restart_quiz" class="btn-next btn-restart">Zrestartuj quiz</button>
 				</form>
-				<a href="explore.php" class="btn-next" style="margin-left: 10px; background-color: var(--color-primary);">Explore More Quizzes</a>
+				<a href="explore.php" class="btn-next" style="margin-left: 10px; background-color: var(--color-primary);">Sprawdź resztę quizów</a>
 			</div>
         <?php endif; ?>
 
