@@ -97,7 +97,7 @@ $liked_quizzes_count = ($liked_quizzes_result) ? mysqli_num_rows($liked_quizzes_
 
 
 // Przykładowe statystyki (jeśli nie masz ich w bazie lub chcesz losowe)
-$quizzes_created = $quizzes_created_count > 0 ? $quizzes_created_count : rand(8, 25); // Liczba stworzonych quizów
+$quizzes_created = $quizzes_created_count;
 // Usunięto $total_plays
 
 mysqli_close($db); // Zamykamy połączenie z bazą danych
