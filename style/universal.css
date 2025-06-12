@@ -45,6 +45,59 @@ body {
   color: var(--color-tertiary);
 }
 
+/* Podstawowe style dla przycisków logout i signin - jednakowy rozmiar */
+.logout-btn, .signin-link {
+  background: var(--color-secondary);
+  color: white;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: 10px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: var(--transition);
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.95rem;
+  min-width: auto;
+  box-sizing: border-box;
+}
+
+.logout-btn:hover, .signin-link:hover {
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-md);
+}
+
+/* Specyficzne style dla sign in */
+.signin-link:hover {
+  background: var(--color-accent);
+}
+
+/* Specyficzne style dla logout - CZERWONY KOLOR */
+.logout-btn {
+  background-color: #7f1d1d !important;
+}
+
+.logout-btn:hover {
+  background-color: #973434 !important;
+}
+
+.logout-form {
+  margin: 0;
+  padding: 0;
+  display: inline;
+}
+
+.logout-form .logout-btn {
+  margin: 0;
+  vertical-align: top;
+}
+
+#selected-page {
+  background: rgba(255, 255, 255, 0.1);
+}
+
 #auth-modal-backdrop {
   position: fixed;
   top: 0;
@@ -377,6 +430,7 @@ body {
   border-top: 1px solid rgba(255, 255, 255, 0.1);
 }
 
+/* Style mobilne - wszystkie przyciski */
 .mobile-auth button,
 .mobile-auth a {
   width: 100%;
@@ -391,10 +445,26 @@ body {
   font-weight: 600;
   transition: var(--transition);
   margin: 0;
+  box-sizing: border-box;
 }
 
-.mobile-auth button:hover,
-.mobile-auth a:hover {
+/* SPECYFICZNY STYL DLA MOBILE LOGOUT - CZERWONY */
+.mobile-auth button[type="submit"],
+.mobile-auth form button {
+  background: #7f1d1d !important;
+}
+
+.mobile-auth button[type="submit"]:hover,
+.mobile-auth form button:hover {
+  background: #973434 !important;
+}
+
+/* Style dla mobile sign in */
+.mobile-auth a:not(.logout-btn) {
+  background: var(--color-secondary);
+}
+
+.mobile-auth a:not(.logout-btn):hover {
   background: var(--color-accent);
 }
 
@@ -407,6 +477,21 @@ body {
     max-width: 500px;
     padding: 2rem;
     margin: 1rem;
+  }
+
+  .mobile-auth button,
+  .mobile-auth a {
+    font-size: 1rem;
+    padding: 14px;
+  }
+
+  /* Upewnij się, że mobile logout ma czerwony kolor */
+  .mobile-auth form button {
+    background: #7f1d1d !important;
+  }
+
+  .mobile-auth form button:hover {
+    background: #973434 !important;
   }
 }
 
@@ -431,5 +516,10 @@ body {
 
   .sign h2 {
     font-size: 1.5rem;
+  }
+
+  .logout-btn, .signin-link {
+    padding: 0.65rem 1.25rem;
+    font-size: 0.9rem;
   }
 }

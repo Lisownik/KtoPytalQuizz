@@ -233,8 +233,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['toggle_like'])) {
 
 <header>
     <div>
-        <a href="index.php"><img src="assets/logo.png" alt="logo mózgu"></a>
-        <h2>Kto Pytał</h2>
+        <a href="index.php">
+            <img src="assets/logo.png" alt="logo mózgu">
+            <h2>Kto Pytał</h2>
+        </a>
     </div>
     <nav>
         <ul>

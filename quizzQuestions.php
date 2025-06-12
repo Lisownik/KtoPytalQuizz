@@ -331,8 +331,10 @@ mysqli_close($db);
 
 <header>
 	<div>
-		<a href="index.php"><img src="assets/logo.png" alt="logo mózgu"></a>
-		<h2>Kto Pytał</h2>
+        <a href="index.php">
+            <img src="assets/logo.png" alt="logo mózgu">
+            <h2>Kto Pytał</h2>
+        </a>
 	</div>
 	<nav>
 		<ul>

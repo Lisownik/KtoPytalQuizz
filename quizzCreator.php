@@ -51,16 +51,20 @@ $zalogowany = isset($_SESSION['zalogowany']) ? $_SESSION['zalogowany'] : false;
 
 <header>
     <div>
-        <a href="index.php"><img src="assets/logo.png" alt="logo mózgu"></a>
-        <h2>Kto Pytał</h2>
+        <a href="index.php">
+            <img src="assets/logo.png" alt="logo mózgu">
+            <h2>Kto Pytał</h2>
+        </a>
     </div>
     <nav>
         <ul>
             <li><a href="index.php">Home</a></li>
-            <li><a href="quizzCreator.php" style="background: rgba(255, 255, 255, 0.1);">Create Quizz</a></li>
+            <li><a id="selected-page" href="quizzCreator.php">Create Quizz</a></li>
             <li><a href="explore.php">Explore</a></li>
-            <li><a href="profile.php">Profile</a></li>
             <li><a href="history.php">History</a></li>
+            <?php if ($zalogowany): ?>
+                <li><a href="profile.php">Profile</a></li>
+            <?php endif; ?>
         </ul>
     </nav>
     <div class="header-auth">

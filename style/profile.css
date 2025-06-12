@@ -1,4 +1,4 @@
-@import url('universal.css');
+
 
 .profile-header {
     background: white; /* Changed to white for a cleaner look */
@@ -115,7 +115,7 @@
     color: white;
     border: none;
     padding: 0.85rem 1.75rem; /* Increased padding */
-    border-radius: var(--border-radius-full); /* Pill shape button */
+    border-radius: var(--border-radius-lg); /* Pill shape button */
     font-weight: 600;
     text-decoration: none;
     transition: var(--transition);
@@ -139,7 +139,7 @@
 /* --- Quiz List and Card Styling --- */
 .quiz-list {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); /* Adaptive columns */
+    grid-template-columns: repeat(auto-fit, minmax(500px, 1fr)); /* Adaptive columns */
     gap: 25px; /* Spacing between quiz cards */
     padding-top: 10px; /* Little padding at the top of the grid */
 }

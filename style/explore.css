@@ -98,7 +98,7 @@
 .quizzes_container {
     display: grid;
     /* Responsive grid: Min 300px, max 1fr, auto-fit to fill space */
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
     gap: 25px; /* Increased gap between cards */
     padding: 20px; /* Padding inside the container */
     background: white; /* White background for the container */
